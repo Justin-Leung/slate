@@ -8,11 +8,11 @@
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
 
     <!-- Use title if it's in the page YAML frontmatter -->
-    <title>API Reference</title>
+    <title>Travis CI - API Reference</title>
 
     <link href="stylesheets/screen.css" media="screen" rel="stylesheet" type="text/css" />
     <link href="stylesheets/print.css" media="print" rel="stylesheet" type="text/css" />
-    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src="javascripts/all.js" type="text/javascript"></script>
 
     <script>
@@ -42,15 +42,15 @@
           
             
               
+                'http',
+              
+            
+              
                 'shell',
               
             
               
                 'ruby',
-              
-            
-              
-                'python',
               
             
           
@@ -61,99 +61,409 @@
 
   <body class="index">
     <div class="tocify-wrapper">
-      <img src="images/logo.png" />
       <div id="toc">
       </div>
-      
-      <ul class="toc-footer">
-        
-          <li><a href='#'>Sign Up for a Developer Key</a></li>
-        
-          <li><a href='http://github.com/tripit/slate'>Documentation Powered by Slate</a></li>
-        
-      </ul>
       
     </div>
     <div class="page-wrapper">
       <div class="content">
-        <h1 id="introduction">Introduction</h1>
-
-<p>Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.</p>
-
-<p>We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.</p>
-
-<p>This example API documentation page was created with <a href="http://github.com/tripit/slate">Slate</a>. Feel free to edit it and use it as a base for your own API&rsquo;s documentation.</p>
-
-<h1 id="authentication">Authentication</h1>
-
-<blockquote>
-<p>To authorize, use this code:</p>
-</blockquote>
-<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'kittn'</span>
-
-<span class="n">api</span> <span class="o">=</span> <span class="no">Kittn</span><span class="o">::</span><span class="no">APIClient</span><span class="p">.</span><span class="nf">authorize!</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">)</span>
-</pre><pre class="highlight python"><span class="kn">import</span> <span class="s">'kittn'</span>
-
-<span class="n">api</span> <span class="o">=</span> <span class="n">Kittn</span><span class="o">.</span><span class="n">authorize</span><span class="p">(</span><span class="s">'meowmeowmeow'</span><span class="p">)</span>
-</pre><pre class="highlight shell"><span class="c"># With shell, you can just pass the correct header with each request</span>
-curl <span class="s2">"api_endpoint_here"</span>
-  -H <span class="s2">"Authorization: meowmeowmeow"</span>
+        <h1 id="overview">Overview</h1>
+<pre class="highlight http"><span class="nf">GET</span> <span class="nn">/</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">MyClient/1.0.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/vnd.travis-ci.2+json</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.travis-ci.org</span>
 </pre>
-<blockquote>
-<p>Make sure to replace <code class="prettyprint">meowmeowmeow</code> with your API key.</p>
-</blockquote>
+<pre class="highlight http"><span class="nf">GET</span> <span class="nn">/</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">MyClient/1.0.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/vnd.travis-ci.2+json</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">token "YOUR TRAVIS ACCESS TOKEN"</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.travis-ci.com</span>
+</pre>
+<pre class="highlight http"><span class="nf">GET</span> <span class="nn">/api</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">MyClient/1.0.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/vnd.travis-ci.2+json</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">token "YOUR TRAVIS ACCESS TOKEN"</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">travis.example.com</span>
+</pre>
+<pre class="highlight shell"><span class="gp">$ </span>travis raw /
+<span class="o">{</span><span class="s2">"hello"</span><span class="o">=</span>&gt;<span class="s2">"world"</span><span class="o">}</span>
 
-<p>Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our <a href="http://example.com/developers">developer portal</a>.</p>
+<span class="gp">$ </span>travis raw / --pro
+<span class="o">{</span><span class="s2">"hello"</span><span class="o">=</span>&gt;<span class="s2">"world"</span><span class="o">}</span>
 
-<p>Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:</p>
+<span class="gp">$ </span>travis raw / --api-endpoint https://travis.example.com/api
+<span class="o">{</span><span class="s2">"hello"</span><span class="o">=</span>&gt;<span class="s2">"world"</span><span class="o">}</span>
+</pre>
+<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'travis'</span>
 
-<p><code class="prettyprint">Authorization: meowmeowmeow</code></p>
+<span class="c1"># talk to travis-ci.org via client object</span>
+<span class="n">client</span> <span class="o">=</span> <span class="no">Travis</span><span class="o">::</span><span class="no">Client</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">repository</span> <span class="o">=</span> <span class="n">client</span><span class="p">.</span><span class="nf">repo</span><span class="p">(</span><span class="s1">'travis-ci/travis.rb'</span><span class="p">)</span>
 
-<p><aside class="notice">
-You must replace <code class="prettyprint">meowmeowmeow</code> with your personal API key.
+<span class="c1"># talk to travis-ci.org via Travis namespace</span>
+<span class="n">repository</span> <span class="o">=</span> <span class="no">Travis</span><span class="o">::</span><span class="no">Repository</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="s1">'travis-ci/travis.rb'</span><span class="p">)</span>
+
+<span class="c1"># talk to travis-ci.com via client object</span>
+<span class="n">client</span> <span class="o">=</span> <span class="no">Travis</span><span class="o">::</span><span class="no">Client</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s1">'https://api.travis-ci.com'</span><span class="p">)</span>
+<span class="n">client</span><span class="p">.</span><span class="nf">access_token</span> <span class="o">=</span> <span class="s1">'YOUR TRAVIS ACCESS TOKEN'</span>
+<span class="n">repository</span> <span class="o">=</span> <span class="n">client</span><span class="p">.</span><span class="nf">repo</span><span class="p">(</span><span class="s1">'travis-pro/billing'</span><span class="p">)</span>
+
+<span class="c1"># talk to travis-ci.com via Travis::Pro namespace</span>
+<span class="no">Travis</span><span class="o">::</span><span class="no">Pro</span><span class="p">.</span><span class="nf">access_token</span> <span class="o">=</span> <span class="s1">'YOUR TRAVIS ACCESS TOKEN'</span>
+<span class="n">repository</span> <span class="o">=</span> <span class="no">Travis</span><span class="o">::</span><span class="no">Pro</span><span class="o">::</span><span class="no">Repository</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="s1">'travis-pro/billing'</span><span class="p">)</span>
+
+<span class="c1"># talk to travis.example.com via client object</span>
+<span class="n">client</span> <span class="o">=</span> <span class="no">Travis</span><span class="o">::</span><span class="no">Client</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s1">'https://travis.example.com/api'</span><span class="p">)</span>
+<span class="n">client</span><span class="p">.</span><span class="nf">access_token</span> <span class="o">=</span> <span class="s1">'YOUR TRAVIS ACCESS TOKEN'</span>
+<span class="n">repository</span> <span class="o">=</span> <span class="n">client</span><span class="p">.</span><span class="nf">repo</span><span class="p">(</span><span class="s1">'my/repo'</span><span class="p">)</span>
+
+<span class="c1"># talk to travis.example.com via custom namespace</span>
+<span class="no">My</span> <span class="o">=</span> <span class="no">Travis</span><span class="o">::</span><span class="no">Client</span><span class="o">::</span><span class="no">Namespaces</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s1">'https://travis.example.com/api'</span><span class="p">)</span>
+<span class="no">My</span><span class="p">.</span><span class="nf">access_token</span> <span class="o">=</span> <span class="s1">'YOUR TRAVIS ACCESS TOKEN'</span>
+<span class="no">My</span><span class="o">::</span><span class="no">Repository</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="s1">'my/repo'</span><span class="p">)</span>
+</pre>
+
+<p>Welcome to the Travis CI API documentation. This is the API used by the official Travis CI web interface, so everything the web ui is able to do can also be accomplished via the API.</p>
+
+<p>The first thing you will have to find out is the correct API endpoint to use.</p>
+
+<ul>
+<li><strong>Travis CI for open source:</strong> For open source projects tested on <a href="https://travis-ci.org">travis-ci.org</a>, use <strong><a href="https://api.travis-ci.org">https://api.travis-ci.org</a></strong>.</li>
+<li><strong>Travis Pro:</strong> For private projects tested on <a href="https://travis-ci.com">travis-ci.com</a>, use <strong><a href="https://api.travis-ci.com">https://api.travis-ci.com</a></strong>.</li>
+<li><strong>Travis Enterprise:</strong> For projects running on a custom setup, use <strong><a href="#">https://travis.example.com/api</a></strong> (where you replace travis.example.com with the domain Travis CI is running on).</li>
+</ul>
+
+<p>Note that both Pro and Enterprise will require almost all API calls to be <a href="#authentication">authenticated</a>.</p>
+
+<h1 id="making-requests">Making Requests</h1>
+<pre class="highlight http"><span class="nf">GET</span> <span class="nn">/</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">MyClient/1.0.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/vnd.travis-ci.2+json</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.travis-ci.org</span>
+</pre>
+<pre class="highlight http"><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+
+<span class="p">{</span><span class="s2">"hello"</span><span class="p">:</span><span class="s2">"world"</span><span class="p">}</span><span class="w">
+</span></pre>
+<pre class="highlight shell"><span class="gp">$ </span>travis raw /
+<span class="o">{</span><span class="s2">"hello"</span>:<span class="s2">"world"</span><span class="o">}</span>
+</pre>
+<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'travis'</span>
+
+<span class="c1"># You usually don't want to fire API requests manually</span>
+<span class="n">client</span> <span class="o">=</span> <span class="no">Travis</span><span class="o">::</span><span class="no">Client</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">client</span><span class="p">.</span><span class="nf">get_raw</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)</span> <span class="c1"># =&gt; {"hello"=&gt;"world"}</span>
+
+<span class="n">client</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="s1">'/repos/sinatra/sinatra'</span><span class="p">)</span>
+<span class="c1"># =&gt; {"repo"=&gt;#&lt;Travis::Client::Repository: sinatra/sinatra&gt;}</span>
+</pre>
+
+<p><aside class="warning">
+  If you do not set the <strong>Accept</strong> header, you might retrieve our old API formats. These are deprecated and will be removed soon.
 </aside></p>
 
-<h1 id="kittens">Kittens</h1>
+<p>When you write your own Travis CI client, please keep the following in mind:</p>
 
-<h2 id="get-all-kittens">Get All Kittens</h2>
-<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'kittn'</span>
+<ul>
+<li>Always set the <strong>User-Agent</strong> header. This header is not required right now, but will be in the near future. Assuming your client is called &ldquo;My Client&rdquo;, and it&rsquo;s current version is 1.0.0, a good value would be <code class="prettyprint">MyClient/1.0.0</code>. For our command line client running on OS X 10.9 on Ruby 2.1.1, it might look like this: <code class="prettyprint">Travis/1.6.8 (Mac OS X 10.9.2 like Darwin; Ruby 2.1.1; RubyGems 2.0.14) Faraday/0.8.9 Typhoeus/0.6.7</code>.</li>
+<li>Always set the <strong>Accept</strong> header to <code class="prettyprint">application/vnd.travis-ci.2+json</code>.</li>
+</ul>
 
-<span class="n">api</span> <span class="o">=</span> <span class="no">Kittn</span><span class="o">::</span><span class="no">APIClient</span><span class="p">.</span><span class="nf">authorize!</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="p">.</span><span class="nf">kittens</span><span class="p">.</span><span class="nf">get</span>
-</pre><pre class="highlight python"><span class="kn">import</span> <span class="s">'kittn'</span>
+<p>Any existing client library should take care of these for you.</p>
 
-<span class="n">api</span> <span class="o">=</span> <span class="n">Kittn</span><span class="o">.</span><span class="n">authorize</span><span class="p">(</span><span class="s">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="o">.</span><span class="n">kittens</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-</pre><pre class="highlight shell">curl <span class="s2">"http://example.com/api/kittens"</span>
-  -H <span class="s2">"Authorization: meowmeowmeow"</span>
+<h1 id="external-apis">External APIs</h1>
+<pre class="highlight http"><span class="nf">GET</span> <span class="nn">/config</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">MyClient/1.0.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/vnd.travis-ci.2+json</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.travis-ci.org</span>
 </pre>
-<blockquote>
-<p>The above command returns JSON structured like this:</p>
-</blockquote>
-<pre class="highlight json"><span class="p">[</span><span class="w">
-  </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Fluffums"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"breed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"calico"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"fluffiness"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"cuteness"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Isis"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"breed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unknown"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"fluffiness"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"cuteness"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w">
+<pre class="highlight http"><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+
+<span class="p">{</span><span class="w">
+  </span><span class="s2">"config"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"host"</span><span class="p">:</span><span class="w"> </span><span class="s2">"travis-ci.org"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"pusher"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5df8ac576dcccf4fd076"</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"github"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"api_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://api.github.com"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"scopes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"read:org"</span><span class="p">,</span><span class="w"> </span><span class="s2">"user:email"</span><span class="p">,</span><span class="w"> </span><span class="s2">"repo_deployment"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"repo:status"</span><span class="p">,</span><span class="w"> </span><span class="s2">"write:repo_hook"</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
   </span><span class="p">}</span><span class="w">
-</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
 </span></pre>
-<p>This endpoint retrieves all kittens.</p>
+<pre class="highlight shell"><span class="gp">$ </span>travis raw /config
+<span class="o">{</span><span class="s2">"config"</span><span class="o">=</span>&gt;
+  <span class="o">{</span><span class="s2">"host"</span><span class="o">=</span>&gt;<span class="s2">"travis-ci.org"</span>,
+   <span class="s2">"pusher"</span><span class="o">=</span>&gt;<span class="o">{</span><span class="s2">"key"</span><span class="o">=</span>&gt;<span class="s2">"5df8ac576dcccf4fd076"</span><span class="o">}</span>,
+   <span class="s2">"github"</span><span class="o">=</span>&gt;
+    <span class="o">{</span><span class="s2">"api_url"</span><span class="o">=</span>&gt;<span class="s2">"https://api.github.com"</span>,
+     <span class="s2">"scopes"</span><span class="o">=</span>&gt;
+      <span class="o">[</span><span class="s2">"read:org"</span>,
+       <span class="s2">"user:email"</span>,
+       <span class="s2">"repo_deployment"</span>,
+       <span class="s2">"repo:status"</span>,
+       <span class="s2">"write:repo_hook"</span><span class="o">]}}}</span>
+</pre>
+<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'travis'</span>
+<span class="n">client</span> <span class="o">=</span> <span class="no">Travis</span><span class="o">::</span><span class="no">Client</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">client</span><span class="p">.</span><span class="nf">config</span>
+<span class="c1"># =&gt; {"host"=&gt;"travis-ci.org",</span>
+<span class="c1">#     "pusher"=&gt;{"key"=&gt;"5df8ac576dcccf4fd076"},</span>
+<span class="c1">#     "github"=&gt;</span>
+<span class="c1">#      {"api_url"=&gt;"https://api.github.com",</span>
+<span class="c1">#       "scopes"=&gt;</span>
+<span class="c1">#        ["read:org",</span>
+<span class="c1">#         "user:email",</span>
+<span class="c1">#         "repo_deployment",</span>
+<span class="c1">#         "repo:status",</span>
+<span class="c1">#         "write:repo_hook"]}}</span>
+</pre>
 
-<h3 id="http-request">HTTP Request</h3>
+<p>Travis CI integrates with external services, some of which your client library might want to interface with directly.
+Most prominently, it uses GitHub as source for users, organizations and repositories, and Pusher for live streaming logs.</p>
 
-<p><code class="prettyprint">GET http://example.com/kittens</code></p>
+<p>You can ask the API for the connection details to these services by loading the <code class="prettyprint">config</code> endpoint.</p>
 
-<h3 id="query-parameters">Query Parameters</h3>
+<p>This includes, amongst other things:</p>
+
+<ul>
+<li>The GitHub API endpoint (this might be a GitHub enterprise endpoint) and the GitHub scopes currently required by Travis CI. These are the scopes you should use when <a href="#creating-a-temporary-github-token">generating a temporary GitHub token</a> for authentication.</li>
+<li>The <a href="http://pusher.com/">Pusher</a> application key. If the setup is running behind a firewall and uses <a href="https://github.com/stevegraham/slanger">Slanger</a>, it will also include the Slanger URL.</li>
+</ul>
+
+<h1 id="authentication">Authentication</h1>
+<pre class="highlight http"><span class="nf">GET</span> <span class="nn">/users</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">MyClient/1.0.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/vnd.travis-ci.2+json</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.travis-ci.org</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">token "YOUR TRAVIS ACCESS TOKEN"</span>
+</pre>
+<pre class="highlight shell"><span class="gp">$ </span>travis whoami -t <span class="s2">"YOUR TRAVIS ACCESS TOKEN"</span>
+</pre>
+<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'travis'</span>
+
+<span class="c1"># against the Travis namespace</span>
+<span class="no">Travis</span><span class="p">.</span><span class="nf">access_token</span> <span class="o">=</span> <span class="s1">'YOUR TRAVIS ACCESS TOKEN'</span>
+<span class="no">Travis</span><span class="o">::</span><span class="no">User</span><span class="p">.</span><span class="nf">current</span>
+
+<span class="c1"># against a client object</span>
+<span class="n">client</span> <span class="o">=</span> <span class="no">Travis</span><span class="o">::</span><span class="no">Client</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">access_token: </span><span class="s1">'YOUR TRAVIS ACCESS TOKEN'</span><span class="p">)</span>
+<span class="n">client</span><span class="p">.</span><span class="nf">user</span>
+</pre>
+
+<p><aside class="notice">
+Do not confuse the <i>access token</i> with the token found on your profile page.
+</aside></p>
+
+<p>To authenticate against Travis CI, you need an API access token.</p>
+
+<p>You can retrieve a token by using a GitHub token to prove who you are.In the future, we are planning to add a proper OAuth hand shake for third party applications.</p>
+
+<h2 id="with-a-github-token">With a GitHub token</h2>
+<pre class="highlight http"><span class="nf">POST</span> <span class="nn">/auth/github</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">MyClient/1.0.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/vnd.travis-ci.2+json</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.travis-ci.org</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">37</span>
+
+<span class="p">{</span><span class="s2">"github_token"</span><span class="p">:</span><span class="s2">"YOUR GITHUB TOKEN"</span><span class="p">}</span><span class="w">
+</span></pre>
+<pre class="highlight http"><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+
+<span class="p">{</span><span class="s2">"access_token"</span><span class="p">:</span><span class="s2">"YOUR TRAVIS ACCESS TOKEN"</span><span class="p">}</span><span class="w">
+</span></pre>
+<pre class="highlight shell"><span class="gp">$ </span>travis login --github-token <span class="s2">"YOUR GITHUB TOKEN"</span>
+Successfully logged <span class="k">in</span>!
+
+<span class="gp">$ </span>travis token
+Your access token is YOUR TRAVIS ACCESS TOKEN
+</pre>
+<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'travis'</span>
+
+<span class="c1"># against the Travis namespace</span>
+<span class="no">Travis</span><span class="p">.</span><span class="nf">github_auth</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+
+<span class="c1"># against a client object</span>
+<span class="n">client</span> <span class="o">=</span> <span class="no">Travis</span><span class="o">::</span><span class="no">Client</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">client</span><span class="p">.</span><span class="nf">github_auth</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</pre>
+
+<p>If you have a GitHub token, you can use the GitHub authentication endpoint to exchange it for an access token.
+The Travis API server will not store the token or use it for anything else then verifying the user account.</p>
+
+<p>Note that therefore the API cannot be used to create new user accounts. The user will have to log in at least once via the web interface before interfacing with the API by other means.</p>
+
+<h2 id="creating-a-temporary-github-token">Creating a temporary GitHub token</h2>
+<pre class="highlight http"><span class="nf">POST</span> <span class="nn">/authorizations</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.github.com</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">Basic ...</span>
+
+<span class="p">{</span><span class="w">
+  </span><span class="s2">"scopes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"read:org"</span><span class="p">,</span><span class="w"> </span><span class="s2">"user:email"</span><span class="p">,</span><span class="w"> </span><span class="s2">"repo_deployment"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"repo:status"</span><span class="p">,</span><span class="w"> </span><span class="s2">"write:repo_hook"</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"note"</span><span class="p">:</span><span class="w"> </span><span class="s2">"temporary token to auth against travis"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></pre>
+<pre class="highlight http"><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">Created</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+
+<span class="p">{</span><span class="w">
+  </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://api.github.com/authorizations/1"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"scopes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"read:org"</span><span class="p">,</span><span class="w"> </span><span class="s2">"user:email"</span><span class="p">,</span><span class="w"> </span><span class="s2">"repo_deployment"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"repo:status"</span><span class="p">,</span><span class="w"> </span><span class="s2">"write:repo_hook"</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"YOUR GITHUB TOKEN"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"note"</span><span class="p">:</span><span class="w"> </span><span class="s2">"temporary token to auth against travis"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></pre>
+<pre class="highlight http"><span class="nf">POST</span> <span class="nn">/auth/github</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">MyClient/1.0.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/vnd.travis-ci.2+json</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.travis-ci.org</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">37</span>
+
+<span class="p">{</span><span class="s2">"github_token"</span><span class="p">:</span><span class="s2">"YOUR GITHUB TOKEN"</span><span class="p">}</span><span class="w">
+</span></pre>
+<pre class="highlight http"><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+
+<span class="p">{</span><span class="s2">"access_token"</span><span class="p">:</span><span class="s2">"YOUR TRAVIS ACCESS TOKEN"</span><span class="p">}</span><span class="w">
+</span></pre>
+<pre class="highlight http"><span class="nf">DELETE</span> <span class="nn">/authorizations/1</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.github.com</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">Basic ...</span>
+</pre>
+<pre class="highlight shell"><span class="gp">$ </span>travis login --auto
+Successfully logged <span class="k">in</span>!
+
+<span class="gp">$ </span>travis token
+Your access token is YOUR TRAVIS ACCESS TOKEN
+</pre>
+<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'travis'</span>
+<span class="nb">require</span> <span class="s1">'travis/tools/github'</span>
+
+<span class="c1"># drop_token will make the token a temporary one</span>
+<span class="n">github</span> <span class="o">=</span> <span class="no">Travis</span><span class="o">::</span><span class="no">Tools</span><span class="o">::</span><span class="no">Github</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">drop_token: </span><span class="kp">true</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">g</span><span class="o">|</span>
+  <span class="n">g</span><span class="p">.</span><span class="nf">ask_login</span>    <span class="o">=</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">print</span><span class="p">(</span><span class="s2">"GitHub login:     "</span><span class="p">);</span> <span class="nb">gets</span> <span class="p">}</span>
+  <span class="n">g</span><span class="p">.</span><span class="nf">ask_password</span> <span class="o">=</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">print</span><span class="p">(</span><span class="s2">"Password:         "</span><span class="p">);</span> <span class="nb">gets</span> <span class="p">}</span>
+  <span class="n">g</span><span class="p">.</span><span class="nf">ask_otp</span>      <span class="o">=</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">print</span><span class="p">(</span><span class="s2">"Two-factor token: "</span><span class="p">);</span> <span class="nb">gets</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="n">github</span><span class="p">.</span><span class="nf">with_token</span> <span class="k">do</span> <span class="o">|</span><span class="n">token</span><span class="o">|</span>
+  <span class="no">Travis</span><span class="p">.</span><span class="nf">github_auth</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="no">Travis</span><span class="p">.</span><span class="nf">access_token</span> <span class="c1"># =&gt; "YOUR TRAVIS ACCESS TOKEN"</span>
+</pre>
+
+<p>Since Travis CI will not store the GitHub token handed to it for authentication, it is possible to generate a temporary GitHub token and remove it again after the authentication handshake.</p>
+
+<p>To create and delete the GitHub token, you can either use the <a href="https://github.com/settings/applications">GitHub web interface</a> or automate it via the <a href="https://developer.github.com/v3/oauth_authorizations/#create-a-new-authorization">GitHub API</a>.</p>
+
+<p>Make sure your GitHub token has the scopes <a href="#external-apis">required</a> by Travis CI.</p>
+
+<p>If you automate this process, authentication will become a handshake consisting of three requests:</p>
+
+<ul>
+<li>Create a GitHub token via the GitHub API, store GitHub token and URL.</li>
+<li>Use the <code class="prettyprint">/auth/github</code> endpoint to exchange it for an access token. Store the access token.</li>
+<li>Delete the GitHub token via the GitHub API.</li>
+</ul>
+
+<p>Some client libraries will automate this handshake for you.</p>
+
+<h2 id="github-oauth-handshake">GitHub OAuth handshake</h2>
+
+<blockquote>
+<p>Triggering an OAuth handshake between GitHub and Travis CI:</p>
+</blockquote>
+<pre class="highlight html"><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"https://api.travis-ci.com/auth/handshake"</span><span class="nt">&gt;</span>log in<span class="nt">&lt;/a&gt;</span>
+</pre>
+
+<blockquote>
+<p>Running the OAuth handshake in an iframe:</p>
+</blockquote>
+<pre class="highlight html"><span class="nt">&lt;script&gt;</span>
+  <span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">"message"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"received token: "</span> <span class="o">+</span> <span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">token</span><span class="p">);</span>
+  <span class="p">});</span>
+
+  <span class="kd">var</span> <span class="nx">iframe</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">'&lt;iframe /&gt;'</span><span class="p">).</span><span class="nx">hide</span><span class="p">();</span>
+  <span class="nx">iframe</span><span class="p">.</span><span class="nx">appendTo</span><span class="p">(</span><span class="s1">'body'</span><span class="p">);</span>
+  <span class="nx">iframe</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">'src'</span><span class="p">,</span> <span class="s2">"https://api.travis-ci.org/auth/post_message"</span><span class="p">);</span>
+<span class="nt">&lt;/script&gt;</span>
+</pre>
+
+<p>You can also trigger a full OAuth handshake between Travis CI and GitHub by opening <code class="prettyprint">/auth/handshake</code> in a web browser. The endpoint takes an optional <code class="prettyprint">redirect_to</code> query parameter, which takes a URL the web browser will end up on if the handshake is successful.</p>
+
+<p>There is an alternative version of this that will try to run the handshake in a hidden iframe and using <code class="prettyprint">window.postMessage</code> to hand the token to the website embedding the iframe. <strong>This endpoint will only work for whitelisted websites.</strong></p>
+
+<h1 id="entities">Entities</h1>
+
+<p>TODO</p>
+
+<h2 id="accounts">Accounts</h2>
+<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'travis'</span>
+<span class="no">Travis</span><span class="p">.</span><span class="nf">access_token</span> <span class="o">=</span> <span class="s1">'YOUR TRAVIS ACCESS TOKEN'</span>
+
+<span class="no">Travis</span><span class="p">.</span><span class="nf">accounts</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">account</span><span class="o">|</span>
+  <span class="nb">puts</span> <span class="s2">"</span><span class="si">#{</span><span class="n">account</span><span class="p">.</span><span class="nf">login</span><span class="si">}</span><span class="s2"> has </span><span class="si">#{</span><span class="n">account</span><span class="p">.</span><span class="nf">repo_count_</span><span class="si">}</span><span class="s2">"</span>
+<span class="k">end</span>
+</pre>
+
+<p>A user might have access to multiple accounts. This is usually the account corresponding to the user directly and one account per GitHub organization.</p>
+
+<h3 id="attributes">Attributes</h3>
+
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>user or organization id</td>
+</tr>
+<tr>
+<td>name</td>
+<td>account name on GitHub</td>
+</tr>
+<tr>
+<td>login</td>
+<td>account login on GitHub</td>
+</tr>
+<tr>
+<td>type</td>
+<td><code class="prettyprint">user</code> or <code class="prettyprint">organization</code></td>
+</tr>
+<tr>
+<td>repos_count</td>
+<td>number of repositories</td>
+</tr>
+<tr>
+<td>subscribed</td>
+<td>whether or not the account has a valid subscription</td>
+</tr>
+</tbody></table>
+
+<p>The <code class="prettyprint">subscribed</code> attribute is only available on Travis Pro.</p>
+
+<h3 id="list-accounts">List accounts</h3>
+
+<p><code class="prettyprint">GET /accounts</code></p>
 
 <table><thead>
 <tr>
@@ -163,126 +473,171 @@ You must replace <code class="prettyprint">meowmeowmeow</code> with your persona
 </tr>
 </thead><tbody>
 <tr>
-<td>include_cats</td>
+<td>all</td>
 <td>false</td>
-<td>If set to true, the result will also include cats.</td>
-</tr>
-<tr>
-<td>available</td>
-<td>true</td>
-<td>If set to false, the result will include kittens that have already been adopted.</td>
+<td>whether or not to include accounts the user does not have admin access to</td>
 </tr>
 </tbody></table>
 
-<p><aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside></p>
+<h2 id="annotations">Annotations</h2>
 
-<h2 id="get-a-specific-kitten">Get a Specific Kitten</h2>
-<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'kittn'</span>
+<p>TODO</p>
 
-<span class="n">api</span> <span class="o">=</span> <span class="no">Kittn</span><span class="o">::</span><span class="no">APIClient</span><span class="p">.</span><span class="nf">authorize!</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="p">.</span><span class="nf">kittens</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-</pre><pre class="highlight python"><span class="kn">import</span> <span class="s">'kittn'</span>
+<h2 id="branches">Branches</h2>
 
-<span class="n">api</span> <span class="o">=</span> <span class="n">Kittn</span><span class="o">.</span><span class="n">authorize</span><span class="p">(</span><span class="s">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="o">.</span><span class="n">kittens</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-</pre><pre class="highlight shell">curl <span class="s2">"http://example.com/api/kittens/3"</span>
-  -H <span class="s2">"Authorization: meowmeowmeow"</span>
-</pre>
+<p>TODO</p>
+
+<h2 id="broadcasts">Broadcasts</h2>
+
+<p>TODO</p>
+
+<h2 id="builds">Builds</h2>
+
+<p>TODO</p>
+
+<h2 id="caches">Caches</h2>
+
+<p>TODO</p>
+
+<h2 id="commits">Commits</h2>
+
+<p>TODO</p>
+
+<h2 id="hooks">Hooks</h2>
+
+<p>TODO</p>
+
+<h2 id="jobs">Jobs</h2>
+
+<p>TODO</p>
+
+<h2 id="logs">Logs</h2>
+
+<p>TODO</p>
+
+<h2 id="permissions">Permissions</h2>
+
+<p>TODO</p>
+
+<h2 id="repository-keys">Repository Keys</h2>
+
+<p>TODO</p>
+
+<h2 id="repositories">Repositories</h2>
+
+<p>TODO</p>
+
+<h2 id="requests">Requests</h2>
+
+<p>TODO</p>
+
+<h2 id="settings">Settings</h2>
+
+<p>TODO</p>
+
+<h2 id="users">Users</h2>
+
+<h1 id="api-clients">API Clients</h1>
+
+<p>There are a few API clients out there you can use for interacting with the Travis API, rather than manually triggering HTTP requests and parsing the responses.</p>
+
+<h2 id="official">Official</h2>
+
+<p>The following clients are maintained by the Travis CI team:</p>
+
+<ul>
+<li><strong><a href="https://github.com/travis-ci/travis.rb">travis.rb</a></strong>: Command line client and Ruby library</li>
+<li><strong><a href="https://github.com/travis-ci/travis-web">travis-web</a></strong>: Web interface and JavaScript library, using Ember.js</li>
+<li><strong><a href="https://github.com/travis-ci/travis-sso">travis-sso</a></strong>: Single-Sign-On Rack middleware for Travis CI applications</li>
+</ul>
+
+<h2 id="web-browsers">Web Browsers</h2>
+
 <blockquote>
-<p>The above command returns JSON structured like this:</p>
+<p>API requests using CORS:</p>
 </blockquote>
-<pre class="highlight json"><span class="p">{</span><span class="w">
-  </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Isis"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"breed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unknown"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"fluffiness"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"cuteness"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></pre>
-<p>This endpoint retrieves a specific kitten.</p>
+<pre class="highlight html"><span class="nt">&lt;script&gt;</span>
+  <span class="c1">// using XMLHttpRequest or XDomainRequest to send an API request
+</span>  <span class="kd">var</span> <span class="nx">req</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">XDomainRequest</span> <span class="p">?</span> <span class="k">new</span> <span class="nx">XDomainRequest</span><span class="p">()</span> <span class="p">:</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
 
-<p><aside class="warning">If you&rsquo;re not using an administrator API key, note that some kittens will return 403 Forbidden if they are hidden for admins only.</aside></p>
+  <span class="k">if</span><span class="p">(</span><span class="nx">req</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">req</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s2">"GET"</span><span class="p">,</span> <span class="s2">"https://api.travis-ci.org/"</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+    <span class="nx">req</span><span class="p">.</span><span class="nx">onreadystatechange</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">alert</span><span class="p">(</span><span class="s2">"it worked!"</span><span class="p">)</span> <span class="p">};</span>
+    <span class="nx">req</span><span class="p">.</span><span class="nx">setRequestHeader</span><span class="p">(</span><span class="s2">"Accept"</span><span class="p">,</span> <span class="s2">"application/vnd.travis-ci.2+json"</span><span class="p">);</span>
+    <span class="nx">req</span><span class="p">.</span><span class="nx">send</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="nt">&lt;/script&gt;</span>
+</pre>
 
-<h3 id="http-request">HTTP Request</h3>
+<blockquote>
+<p>With jQuery:</p>
+</blockquote>
+<pre class="highlight html"><span class="nt">&lt;script&gt;</span>
+<span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+  <span class="na">url</span><span class="p">:</span> <span class="s2">"https://api.travis-ci.org/"</span><span class="p">,</span>
+  <span class="na">headers</span><span class="p">:</span> <span class="p">{</span> <span class="na">Accept</span><span class="p">:</span> <span class="s2">"application/vnd.travis-ci.2+json"</span> <span class="p">},</span>
+  <span class="na">success</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">alert</span><span class="p">(</span><span class="s2">"it worked!"</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">});</span>
+<span class="nt">&lt;/script&gt;</span>
+</pre>
 
-<p><code class="prettyprint">GET http://example.com/kittens/&lt;ID&gt;</code></p>
+<blockquote>
+<p>JSONP</p>
+</blockquote>
+<pre class="highlight html"><span class="nt">&lt;script&gt;</span>
+  <span class="kd">function</span> <span class="nx">jsonpCallback</span><span class="p">()</span> <span class="p">{</span> <span class="nx">alert</span><span class="p">(</span><span class="s2">"it worked!"</span><span class="p">)</span> <span class="p">};</span>
+<span class="nt">&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://api.travis-ci.org/?callback=jsonpCallback"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</pre>
 
-<h3 id="url-parameters">URL Parameters</h3>
+<p>When writing an in-browser client, you have to circumvent the browser&rsquo;s
+<a href="http://en.wikipedia.org/wiki/Same_origin_policy">same origin policy</a>.
+Generally, we offer two different approaches for this:
+<a href="http://en.wikipedia.org/wiki/Cross-origin_resource_sharing">Cross-Origin Resource Sharing</a> (aka CORS)
+and <a href="http://en.wikipedia.org/wiki/JSONP">JSONP</a>. If you don&rsquo;t have any good
+reason for using JSONP, we recommend you use CORS.</p>
 
-<table><thead>
-<tr>
-<th>Parameter</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>ID</td>
-<td>The ID of the cat to retrieve</td>
-</tr>
-</tbody></table>
+<h3 id="cross-origin-resource-sharing">Cross-Origin Resource Sharing</h3>
 
-<h1 id="errors">Errors</h1>
+<p>All API resources set appropriate headers to allow Cross-Origin requests. Be
+aware that on Internet Explorer you might have to use a different interface to
+send these requests.</p>
 
-<p>The Kittn API uses the following error codes:</p>
+<p>In contrast to JSONP, CORS does not lead to any execution of untrusted code.</p>
 
-<table><thead>
-<tr>
-<th>Error Code</th>
-<th>Meaning</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>400</td>
-<td>Bad Request &ndash; Your request sucks</td>
-</tr>
-<tr>
-<td>401</td>
-<td>Unauthorized &ndash; Your API key is wrong</td>
-</tr>
-<tr>
-<td>403</td>
-<td>Forbidden &ndash; The kitten requested is hidden for administrators only</td>
-</tr>
-<tr>
-<td>404</td>
-<td>Not Found &ndash; The specified kitten could not be found</td>
-</tr>
-<tr>
-<td>405</td>
-<td>Method Not Allowed &ndash; You tried to access a kitten with an invalid method</td>
-</tr>
-<tr>
-<td>406</td>
-<td>Not Acceptable &ndash; You requested a format that isn&rsquo;t json</td>
-</tr>
-<tr>
-<td>410</td>
-<td>Gone &ndash; The kitten requested has been removed from our servers</td>
-</tr>
-<tr>
-<td>418</td>
-<td>I&rsquo;m a teapot</td>
-</tr>
-<tr>
-<td>429</td>
-<td>Too Many Requests &ndash; You&rsquo;re requesting too many kittens! Slown down!</td>
-</tr>
-<tr>
-<td>500</td>
-<td>Internal Server Error &ndash; We had a problem with our server. Try again later.</td>
-</tr>
-<tr>
-<td>503</td>
-<td>Service Unavailable &ndash; We&rsquo;re temporarially offline for maintanance. Please try again later.</td>
-</tr>
-</tbody></table>
+<p>Most JavaScript frameworks, like <a href="http://jquery.com">jQuery</a>, take care of CORS
+requests for you under the hood, so you can just do a normal <em>ajax</em> request.</p>
 
+<p>Our current setup allows the headers <code class="prettyprint">Content-Type</code>, <code class="prettyprint">Authorization</code>, <code class="prettyprint">Accept</code> and the HTTP methods <code class="prettyprint">HEAD</code>, <code class="prettyprint">GET</code>, <code class="prettyprint">POST</code>, <code class="prettyprint">PATCH</code>, <code class="prettyprint">PUT</code>, <code class="prettyprint">DELETE</code>.</p>
+
+<h3 id="jsonp">JSONP</h3>
+
+<p>You can disable the same origin policy by treating the response as JavaScript.
+Supply a <code class="prettyprint">callback</code> parameter to use this.</p>
+
+<p>This has the potential of code injection, use with caution.</p>
+
+<h2 id="third-party">Third Party</h2>
+
+<p>Besides the official clients, there is a range of third party client available, amongst these:</p>
+
+<ul>
+<li><strong><a href="https://github.com/l3l0/php-travis-client">PHP Travis Client</a></strong>: PHP client library</li>
+<li><strong><a href="https://github.com/pwmckenna/node-travis-ci">Travis Node.js</a></strong>: Node.js client library</li>
+<li><strong><a href="https://github.com/cmaujean/travis-api-wrapper">travis-api-wrapper</a></strong>: Asynchronous Node.js wrapper</li>
+<li><strong><a href="https://github.com/mmalecki/node-travis-ci">travis-ci</a></strong>: Thin Node.js wrapper</li>
+<li><strong><a href="https://github.com/smcintosh/travisminer">TravisMiner</a></strong>: Ruby library for mining the Travis API</li>
+</ul>
+
+        
       </div>
       <div class="dark-box">
         <div id="lang-selector">
           
+            
+              
+                <a href="#" data-language-name="http">http</a>
+              
             
               
                 <a href="#" data-language-name="shell">shell</a>
@@ -290,10 +645,6 @@ Remember — a happy kitten is an authenticated kitten!
             
               
                 <a href="#" data-language-name="ruby">ruby</a>
-              
-            
-              
-                <a href="#" data-language-name="python">python</a>
               
             
           
