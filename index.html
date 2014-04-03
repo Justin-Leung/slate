@@ -261,7 +261,7 @@ Do not confuse the <i>access token</i> with the token found on your profile page
 
 <p>To authenticate against Travis CI, you need an API access token.</p>
 
-<p>You can retrieve a token by using a GitHub token to prove who you are. In the future, we are planning to add a proper OAuth hand shake for third party applications.</p>
+<p>You can retrieve a token by using a GitHub token to prove who you are. In the future, we are planning to add a proper OAuth handshake for third party applications.</p>
 
 <h2 id="with-a-github-token">With a GitHub token</h2>
 <pre class="highlight http"><span class="nf">POST</span> <span class="nn">/auth/github</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -419,7 +419,7 @@ Your access token is YOUR TRAVIS ACCESS TOKEN
 <span class="no">Travis</span><span class="p">.</span><span class="nf">access_token</span> <span class="o">=</span> <span class="s1">'YOUR TRAVIS ACCESS TOKEN'</span>
 
 <span class="no">Travis</span><span class="p">.</span><span class="nf">accounts</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">account</span><span class="o">|</span>
-  <span class="nb">puts</span> <span class="s2">"</span><span class="si">#{</span><span class="n">account</span><span class="p">.</span><span class="nf">login</span><span class="si">}</span><span class="s2"> has </span><span class="si">#{</span><span class="n">account</span><span class="p">.</span><span class="nf">repo_count_</span><span class="si">}</span><span class="s2">"</span>
+  <span class="nb">puts</span> <span class="s2">"</span><span class="si">#{</span><span class="n">account</span><span class="p">.</span><span class="nf">login</span><span class="si">}</span><span class="s2"> has </span><span class="si">#{</span><span class="n">account</span><span class="p">.</span><span class="nf">repos_count</span><span class="si">}</span><span class="s2">"</span>
 <span class="k">end</span>
 </pre>
 
