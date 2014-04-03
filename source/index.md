@@ -408,7 +408,7 @@ require 'travis'
 Travis.access_token = 'YOUR TRAVIS ACCESS TOKEN'
 
 Travis.accounts.each do |account|
-  puts "#{account.login} has #{account.repo_count_}"
+  puts "#{account.login} has #{account.repos_count}"
 end
 ```
 
