@@ -403,6 +403,12 @@ TODO
 
 ## Accounts
 
+``` shell
+$ travis accounts
+rkh (Konstantin Haase): subscribed, 167 repositories
+travis-ci (Travis CI): subscribed, 70 repositories
+```
+
 ``` ruby
 require 'travis'
 Travis.access_token = 'YOUR TRAVIS ACCESS TOKEN'
