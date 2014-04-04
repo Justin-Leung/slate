@@ -403,6 +403,38 @@ TODO
 
 ## Accounts
 
+``` http
+GET /accounts HTTP/1.1
+User-Agent: MyClient/1.0.0
+Accept: application/vnd.travis-ci.2+json
+Host: api.travis-ci.org
+Authorization: token "YOUR TRAVIS ACCESS TOKEN"
+```
+
+``` http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+   "accounts" : [
+      {
+         "repos_count" : 167,
+         "name" : "Konstantin Haase",
+         "type" : "user",
+         "id" : 267,
+         "login" : "rkh"
+      },
+      {
+         "repos_count" : 70,
+         "name" : "Travis CI",
+         "type" : "organization",
+         "id" : 87,
+         "login" : "travis-ci"
+      }
+   ]
+}
+```
+
 ``` shell
 $ travis accounts
 rkh (Konstantin Haase): subscribed, 167 repositories
