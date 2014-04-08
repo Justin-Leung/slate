@@ -544,7 +544,77 @@ status      |         | annotation status
 
 ## Branches
 
-TODO
+``` http
+GET /repos/rails/rails/branches HTTP/1.1
+User-Agent: MyClient/1.0.0
+Accept: application/vnd.travis-ci.2+json
+Host: api.travis-ci.org
+```
+
+``` http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "branches": [
+    {
+      "id": 22554234,
+      "repository_id": 891,
+      "commit_id": 6534402,
+      "number": "15184",
+      "config": {},
+      "state": "created",
+      "started_at": "2014-04-08T00:17:34Z",
+      "finished_at": "2014-04-08T00:48:59Z",
+      "duration": 30546,
+      "job_ids": [],
+      "pull_request": false
+    }
+  ]
+}
+```
+
+``` shell
+$ travis branches -r rails/rails
+v4.1.0:         #15184 created  Dont encourage aliases now that …
+master:         #15183 created  Dont abbreviate that which needs…
+4-1-0:          #15183 created  Dont encourage aliases now that …
+4-1-stable:     #15185 created  Merge branch '4-1-0' into 4-1-st…
+adequaterecord: #15158 passed   wrap the literal value before ha…
+```
+
+``` ruby
+require 'travis'
+
+repository = Travis::Repository.find('rails/rails')
+repository.branches
+# => {"v4.1.0"          => #<Travis::Client::Build: rails/rails#15184>,
+#      "master"         => #<Travis::Client::Build: rails/rails#15183>,
+#      "4-1-0"          => #<Travis::Client::Build: rails/rails#15183>,
+#      "4-1-stable"     => #<Travis::Client::Build: rails/rails#15185>,
+#      "adequaterecord" => #<Travis::Client::Build: rails/rails#15158>,
+#      "4-0-stable"     => #<Travis::Client::Build: rails/rails#15143>}
+```
+
+The branches API can be used to get information about the latest build on a given branch.
+
+### Attributes
+
+See [builds](#builds).
+
+### List Branches
+
+This will list the latest 25 branches.
+
+`GET /repos/{repository.id}/branches`
+
+`GET /repos/{repository.owner_name}/{repository.name}/branches`
+
+### Show Branch
+
+`GET /repos/{repository.id}/branches/{branch}`
+
+`GET /repos/{repository.owner_name}/{repository.name}/branches/{branch}`
 
 ## Broadcasts
 
