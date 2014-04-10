@@ -954,7 +954,58 @@ compare_url         | link to diff on GitHub
 
 ## Hooks
 
-TODO
+``` http
+PUT /hooks HTTP/1.1
+User-Agent: MyClient/1.0.0
+Accept: application/vnd.travis-ci.2+json
+Authorization: token YOUR TRAVIS ACCESS TOKEN
+Host: api.travis-ci.org
+Content-Type: application/json
+
+{
+  "hook": {
+    "id": 42,
+    "active": true
+  }
+}
+```
+
+``` shell
+$ travis enable -r my/repo
+```
+
+``` ruby
+require 'travis'
+Travis.access_token = 'YOUR TRAVIS ACCESS TOKEN'
+Travis.hooks.each { |hook| hook.enable }
+```
+
+### Attributes
+
+See [repository](#repositories).
+
+### List Hooks
+
+`GET /hooks`
+
+This request always needs to be authenticated.
+
+### Enable/Disable Hook
+
+`PUT /hooks`
+
+Parameter     | Default | Description
+------------- | ------- | -----------
+hook[id]      |         | id of the hook/repository
+hook[active]  | false   | whether to turn hook on (true) or off (false)
+
+`PUT /hooks/{hook.id}`
+
+Parameter     | Default | Description
+------------- | ------- | -----------
+hook[active]  | false   | whether to turn hook on (true) or off (false)
+
+This request always needs to be authenticated.
 
 ## Jobs
 
