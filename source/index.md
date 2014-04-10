@@ -887,7 +887,70 @@ This request always needs to be authenticated.
 
 ## Commits
 
-TODO
+``` http
+GET /repos/sinatra/sinatra/builds HTTP/1.1
+User-Agent: MyClient/1.0.0
+Accept: application/vnd.travis-ci.2+json
+Host: api.travis-ci.org
+```
+
+``` http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "builds": [ ],
+  "jobs": [ ],
+  "commits": [
+    {
+      "id": 1873023,
+      "sha": "a18f211f6f921affd1ecd8c18691b40d9948aae5",
+      "branch": "master",
+      "message": "Merge pull request #25 from henrikhodne/add-responses-to-documentation\n\nAdd responses to documentation",
+      "committed_at": "2013-04-15T09:44:31Z",
+      "author_name": "Henrik Hodne",
+      "author_email": "me@henrikhodne.com",
+      "committer_name": "Henrik Hodne",
+      "committer_email": "me@henrikhodne.com",
+      "compare_url": "https://github.com/travis-ci/travis-api/compare/0f31ff4fb6aa...a18f211f6f92"
+    }
+  ]
+}
+```
+
+``` shell
+$ travis history -r sinatra/sinatra
+#784 failed:     master Merge pull request #861 from kant/patch-1
+#783 passed:     v1.4.5 v1.4.5
+#782 passed:     master v1.4.5
+```
+
+``` ruby
+require 'travis'
+
+repository = Travis::Repository.find('my/repo')
+repository.each_build do |build|
+  puts build.commit.message
+end
+```
+
+There is no API endpoint for resolving commits, however commit data might be included in other API responses, like [builds](#builds) or [jobs](#jobs).
+
+### Attributes
+
+Attribute           | Description
+------------------- | -----------
+id                  | commit id
+sha                 | commit sha
+branch              | branch the commit is on
+message             | commit message
+committed_at        | commit date
+author_name         | author name
+author_email        | author email
+committer_name      | committer name
+committer_email     | committer email
+compare_url         | link to diff on GitHub
+
 
 ## Hooks
 
