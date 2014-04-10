@@ -689,7 +689,7 @@ adequaterecord: <span class="c">#15158 passed   wrap the literal value before ha
 <pre class="highlight http"><span class="nf">GET</span> <span class="nn">/broadcasts</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">User-Agent</span><span class="p">:</span> <span class="s">MyClient/1.0.0</span>
 <span class="na">Accept</span><span class="p">:</span> <span class="s">application/vnd.travis-ci.2+json</span>
-<span class="na">Authorization</span><span class="p">:</span> <span class="s">token YOUR ACCESS TOKEN</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">token YOUR TRAVIS ACCESS TOKEN</span>
 <span class="na">Host</span><span class="p">:</span> <span class="s">api.travis-ci.org</span>
 </pre>
 <pre class="highlight http"><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
@@ -779,7 +779,7 @@ adequaterecord: <span class="c">#15158 passed   wrap the literal value before ha
 ...
 </pre>
 <pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'travis'</span>
-<span class="no">Travis</span><span class="p">.</span><span class="nf">access_token</span> <span class="o">=</span> <span class="s1">'YOUR ACCESS TOKEN'</span>
+<span class="no">Travis</span><span class="p">.</span><span class="nf">access_token</span> <span class="o">=</span> <span class="s1">'YOUR TRAVIS ACCESS TOKEN'</span>
 
 <span class="n">repository</span> <span class="o">=</span> <span class="no">Travis</span><span class="o">::</span><span class="no">Repository</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="s1">'my/repo'</span><span class="p">)</span>
 <span class="n">repository</span><span class="p">.</span><span class="nf">each_build</span> <span class="k">do</span> <span class="o">|</span><span class="n">build</span><span class="o">|</span>
@@ -970,9 +970,26 @@ adequaterecord: <span class="c">#15158 passed   wrap the literal value before ha
 <p>This request always needs to be authenticated.</p>
 
 <h2 id="caches">Caches</h2>
-<pre class="highlight http"><span class="err">REQUEST
-</span></pre>
-<pre class="highlight http"><span class="err">RESPONSE
+<pre class="highlight http"><span class="nf">GET</span> <span class="nn">/repos/travis-pro/billing/builds</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">MyClient/1.0.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/vnd.travis-ci.2+json</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">token YOUR TRAVIS ACCESS TOKEN</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.travis-ci.com</span>
+</pre>
+<pre class="highlight http"><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+
+<span class="p">{</span><span class="w">
+  </span><span class="s2">"caches"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"repository_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">51007</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"size"</span><span class="p">:</span><span class="w"> </span><span class="mi">103677795</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"slug"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cache--rvm-2.0.0--gemfile-Gemfile"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"branch"</span><span class="p">:</span><span class="w"> </span><span class="s2">"master"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"last_modified"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2014-03-06T16:19:49Z"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
 </span></pre>
 <pre class="highlight shell"><span class="gp">$ </span>travis cache -r travis-pro/billing
 On branch master:
@@ -1083,12 +1100,170 @@ Overall size of above caches: 371.08 MiB
 <p>This request always needs to be authenticated.</p>
 
 <h2 id="commits">Commits</h2>
+<pre class="highlight http"><span class="nf">GET</span> <span class="nn">/repos/sinatra/sinatra/builds</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">MyClient/1.0.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/vnd.travis-ci.2+json</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.travis-ci.org</span>
+</pre>
+<pre class="highlight http"><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
 
-<p>TODO</p>
+<span class="p">{</span><span class="w">
+  </span><span class="s2">"builds"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"jobs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"commits"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1873023</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"sha"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a18f211f6f921affd1ecd8c18691b40d9948aae5"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"branch"</span><span class="p">:</span><span class="w"> </span><span class="s2">"master"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Merge pull request #25 from henrikhodne/add-responses-to-documentation\n\nAdd responses to documentation"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"committed_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2013-04-15T09:44:31Z"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"author_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Henrik Hodne"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"author_email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"me@henrikhodne.com"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"committer_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Henrik Hodne"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"committer_email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"me@henrikhodne.com"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"compare_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://github.com/travis-ci/travis-api/compare/0f31ff4fb6aa...a18f211f6f92"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></pre>
+<pre class="highlight shell"><span class="gp">$ </span>travis <span class="nb">history</span> -r sinatra/sinatra
+<span class="c">#784 failed:     master Merge pull request #861 from kant/patch-1</span>
+<span class="c">#783 passed:     v1.4.5 v1.4.5</span>
+<span class="c">#782 passed:     master v1.4.5</span>
+</pre>
+<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'travis'</span>
+
+<span class="n">repository</span> <span class="o">=</span> <span class="no">Travis</span><span class="o">::</span><span class="no">Repository</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="s1">'my/repo'</span><span class="p">)</span>
+<span class="n">repository</span><span class="p">.</span><span class="nf">each_build</span> <span class="k">do</span> <span class="o">|</span><span class="n">build</span><span class="o">|</span>
+  <span class="nb">puts</span> <span class="n">build</span><span class="p">.</span><span class="nf">commit</span><span class="p">.</span><span class="nf">message</span>
+<span class="k">end</span>
+</pre>
+
+<p>There is no API endpoint for resolving commits, however commit data might be included in other API responses, like <a href="#builds">builds</a> or <a href="#jobs">jobs</a>.</p>
+
+<h3 id="attributes">Attributes</h3>
+
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>commit id</td>
+</tr>
+<tr>
+<td>sha</td>
+<td>commit sha</td>
+</tr>
+<tr>
+<td>branch</td>
+<td>branch the commit is on</td>
+</tr>
+<tr>
+<td>message</td>
+<td>commit message</td>
+</tr>
+<tr>
+<td>committed_at</td>
+<td>commit date</td>
+</tr>
+<tr>
+<td>author_name</td>
+<td>author name</td>
+</tr>
+<tr>
+<td>author_email</td>
+<td>author email</td>
+</tr>
+<tr>
+<td>committer_name</td>
+<td>committer name</td>
+</tr>
+<tr>
+<td>committer_email</td>
+<td>committer email</td>
+</tr>
+<tr>
+<td>compare_url</td>
+<td>link to diff on GitHub</td>
+</tr>
+</tbody></table>
 
 <h2 id="hooks">Hooks</h2>
+<pre class="highlight http"><span class="nf">PUT</span> <span class="nn">/hooks</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">MyClient/1.0.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/vnd.travis-ci.2+json</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">token YOUR TRAVIS ACCESS TOKEN</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.travis-ci.org</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
 
-<p>TODO</p>
+<span class="p">{</span><span class="w">
+  </span><span class="s2">"hook"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"active"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></pre>
+<pre class="highlight shell"><span class="gp">$ </span>travis <span class="nb">enable</span> -r my/repo
+</pre>
+<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'travis'</span>
+<span class="no">Travis</span><span class="p">.</span><span class="nf">access_token</span> <span class="o">=</span> <span class="s1">'YOUR TRAVIS ACCESS TOKEN'</span>
+<span class="no">Travis</span><span class="p">.</span><span class="nf">hooks</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">hook</span><span class="o">|</span> <span class="n">hook</span><span class="p">.</span><span class="nf">enable</span> <span class="p">}</span>
+</pre>
+
+<h3 id="attributes">Attributes</h3>
+
+<p>See <a href="#repositories">repository</a>.</p>
+
+<h3 id="list-hooks">List Hooks</h3>
+
+<p><code class="prettyprint">GET /hooks</code></p>
+
+<p>This request always needs to be authenticated.</p>
+
+<h3 id="enable/disable-hook">Enable/Disable Hook</h3>
+
+<p><code class="prettyprint">PUT /hooks</code></p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>hook[id]</td>
+<td></td>
+<td>id of the hook/repository</td>
+</tr>
+<tr>
+<td>hook[active]</td>
+<td>false</td>
+<td>whether to turn hook on (true) or off (false)</td>
+</tr>
+</tbody></table>
+
+<p><code class="prettyprint">PUT /hooks/{hook.id}</code></p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>hook[active]</td>
+<td>false</td>
+<td>whether to turn hook on (true) or off (false)</td>
+</tr>
+</tbody></table>
+
+<p>This request always needs to be authenticated.</p>
 
 <h2 id="jobs">Jobs</h2>
 
