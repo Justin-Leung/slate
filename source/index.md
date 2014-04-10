@@ -622,7 +622,7 @@ This will list the latest 25 branches.
 GET /broadcasts HTTP/1.1
 User-Agent: MyClient/1.0.0
 Accept: application/vnd.travis-ci.2+json
-Authorization: token YOUR ACCESS TOKEN
+Authorization: token YOUR TRAVIS ACCESS TOKEN
 Host: api.travis-ci.org
 ```
 
@@ -715,7 +715,7 @@ $ travis cancel 15
 
 ``` ruby
 require 'travis'
-Travis.access_token = 'YOUR ACCESS TOKEN'
+Travis.access_token = 'YOUR TRAVIS ACCESS TOKEN'
 
 repository = Travis::Repository.find('my/repo')
 repository.each_build do |build|
@@ -798,11 +798,28 @@ This request always needs to be authenticated.
 ## Caches
 
 ``` http
-REQUEST
+GET /repos/travis-pro/billing/builds HTTP/1.1
+User-Agent: MyClient/1.0.0
+Accept: application/vnd.travis-ci.2+json
+Authorization: token YOUR TRAVIS ACCESS TOKEN
+Host: api.travis-ci.com
 ```
 
 ``` http
-RESPONSE
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "caches": [
+    {
+      "repository_id": 51007,
+      "size": 103677795,
+      "slug": "cache--rvm-2.0.0--gemfile-Gemfile",
+      "branch": "master",
+      "last_modified": "2014-03-06T16:19:49Z"
+    }
+  ]
+}
 ```
 
 ``` shell
