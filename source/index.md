@@ -797,7 +797,76 @@ This request always needs to be authenticated.
 
 ## Caches
 
-TODO
+``` http
+REQUEST
+```
+
+``` http
+RESPONSE
+```
+
+``` shell
+$ travis cache -r travis-pro/billing
+On branch master:
+cache--rvm-2.0.0--gemfile-Gemfile  last modified: 2014-03-06 11:19:49  size: 98.87 MiB
+
+On branch mm-ruby-2.1:
+cache--rvm-2.0.0--gemfile-Gemfile  last modified: 2013-12-28 09:42:21  size: 98.87 MiB
+cache--rvm-2.1.0--gemfile-Gemfile  last modified: 2013-12-28 09:42:21  size: 88.02 MiB
+
+Overall size of above caches: 371.08 MiB
+
+$ travis cache -r travis-pro/billing --delete --branch mm-ruby-2.1
+```
+
+``` ruby
+require 'travis'
+
+repository = Travis::Repository.find('travis-pro/billing')
+repository.caches.each do |cache|
+  # delete all caches!
+  cache.delete if cache.branch == 'mm-ruby-2.1'
+end
+
+# or in a single request
+repository.delete_caches(branch: 'mm-ruby-2.1')
+```
+
+### Attributes
+
+Attribute           | Description
+------------------- | -----------
+repository_id       | id of the repository the cache belongs to
+size                | compressed cache size in bytes
+slug                | cache slug (generated from env)
+branch              | branch the cache is for
+last_modified       | last time the cache was updated
+
+### List caches
+
+`GET /repos/{repository.id}/caches`
+
+`GET /repos/{repository.owner_name}/{repository.name}/caches`
+
+Parameter     | Default | Description
+------------- | ------- | -----------
+branch        |         | limit listed caches to those on given branch
+match         |         | limit listed caches to those with `slug` containing the given value
+
+This request always needs to be authenticated.
+
+### Delete caches
+
+`DELETE /repos/{repository.id}/caches`
+
+`DELETE /repos/{repository.owner_name}/{repository.name}/caches`
+
+Parameter     | Default | Description
+------------- | ------- | -----------
+branch        |         | only delete caches on given branch
+match         |         | only delete caches with `slug` containing the given value
+
+This request always needs to be authenticated.
 
 ## Commits
 
