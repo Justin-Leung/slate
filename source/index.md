@@ -618,11 +618,182 @@ This will list the latest 25 branches.
 
 ## Broadcasts
 
-TODO
+``` http
+GET /broadcasts HTTP/1.1
+User-Agent: MyClient/1.0.0
+Accept: application/vnd.travis-ci.2+json
+Authorization: token YOUR ACCESS TOKEN
+Host: api.travis-ci.org
+```
+
+``` http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "broadcasts": [
+    {
+      "id": 42,
+      "message": "We're switching our build infrastructure on April 29."
+    }
+  ]
+}
+```
+
+``` shell
+$ travis raw /broadcasts
+{"broadcasts"=>[{"id"=>451, "message"=>"This is a broadcast!"}]}
+```
+
+``` ruby
+require 'travis'
+
+Travis::Broadcast.current.each do |broadcast|
+  puts broadcast.message
+end
+```
+
+### Attributes
+
+Attribute   | Description
+----------- | -----------
+id          | broadcast id
+message     | broadcast message
+
+### List Broadcasts
+
+`GET /broadcasts`
+
+This request always needs to be authenticated.
 
 ## Builds
 
-TODO
+``` http
+GET /repos/sinatra/sinatra/builds HTTP/1.1
+User-Agent: MyClient/1.0.0
+Accept: application/vnd.travis-ci.2+json
+Host: api.travis-ci.org
+```
+
+``` http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "builds": [
+    {
+      "commit_id": 6534711,
+      "config": { },
+      "duration": 2648,
+      "finished_at": "2014-04-08T19:52:56Z",
+      "id": 22555277,
+      "job_ids": [22555278, 22555279, 22555280, 22555281],
+      "number": "784",
+      "pull_request": true,
+      "pull_request_number": "1912",
+      "pull_request_title": "Example PR",
+      "repository_id": 82,
+      "started_at": "2014-04-08T19:37:44Z",
+      "state": "failed"
+    }
+  ],
+  "jobs": [ ],
+  "commits": [ ]
+}
+```
+
+``` shell
+$ travis history
+...
+$ travis show 15 # show build #15
+...
+$ travis restart 15
+...
+$ travis cancel 15
+...
+```
+
+``` ruby
+require 'travis'
+Travis.access_token = 'YOUR ACCESS TOKEN'
+
+repository = Travis::Repository.find('my/repo')
+repository.each_build do |build|
+  # restart all the builds
+  build.restart
+end
+```
+
+### Attributes
+
+Attribute           | Description
+------------------- | -----------
+id                  | build id
+repository_id       | repository id
+commit_id           | commit id
+number              | build number
+pull_request        | true or false
+pull_request_title  | PR title if pull_request is true
+pull_request_number | PR number if  pull_request is true
+config              | build config (secure values and ssh key removed)
+state               | build state
+started_at          | time the build was started
+finished_at         | time the build finished
+duration            | build duration
+job_ids             | list of job ids in the build matrix
+
+Note that `duration` might not correspond to `finished_at - started_at` if the build was restarted at a later point.
+
+### List Builds
+
+`GET /builds`
+
+Parameter     | Default | Description
+------------- | ------- | -----------
+ids           |         | list of build ids to fetch
+repository_id |         | repository id the build belongs to
+slug          |         | repository slug the build belongs to
+number        |         | filter by build number, requires slug or repository_id
+after_number  |         | list build after a given build number (use for pagination), requires slug or repository_id
+event_type    |         | limit build to given event type (`push` or `pull_request`)
+
+You have to supply either `ids`, `repository_id` or `slug`.
+
+`GET /repos/{repository.id}/builds`
+
+Parameter     | Default | Description
+------------- | ------- | -----------
+number        |         | filter by build number
+after_number  |         | list build after a given build number (use for pagination)
+event_type    |         | limit build to given event type (`push` or `pull_request`)
+
+`GET /repos/{repository.owner_name}/{repository.name}/builds`
+
+Parameter     | Default | Description
+------------- | ------- | -----------
+number        |         | filter by build number
+after_number  |         | list build after a given build number (use for pagination)
+event_type    |         | limit build to given event type (`push` or `pull_request`)
+
+### Show Build
+
+`GET /builds/{build.id}`
+
+`GET /repos/{repository.id}/builds/{build.id}`
+
+`GET /repos/{repository.owner_name}/{repository.name}/builds/{build.id}`
+
+### Cancel Build
+
+`POST /builds/{build.id}/cancel`
+
+This request always needs to be authenticated.
+
+### Restart Build
+
+`POST /builds/{build.id}/restart`
+
+This request always needs to be authenticated.
 
 ## Caches
 
