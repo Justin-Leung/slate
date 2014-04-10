@@ -686,16 +686,401 @@ adequaterecord: <span class="c">#15158 passed   wrap the literal value before ha
 <p><code class="prettyprint">GET /repos/{repository.owner_name}/{repository.name}/branches/{branch}</code></p>
 
 <h2 id="broadcasts">Broadcasts</h2>
+<pre class="highlight http"><span class="nf">GET</span> <span class="nn">/broadcasts</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">MyClient/1.0.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/vnd.travis-ci.2+json</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">token YOUR ACCESS TOKEN</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.travis-ci.org</span>
+</pre>
+<pre class="highlight http"><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
 
-<p>TODO</p>
+<span class="p">{</span><span class="w">
+  </span><span class="s2">"broadcasts"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"We're switching our build infrastructure on April 29."</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></pre>
+<pre class="highlight shell"><span class="gp">$ </span>travis raw /broadcasts
+<span class="o">{</span><span class="s2">"broadcasts"</span><span class="o">=</span>&gt;[<span class="o">{</span><span class="s2">"id"</span><span class="o">=</span>&gt;451, <span class="s2">"message"</span><span class="o">=</span>&gt;<span class="s2">"This is a broadcast!"</span><span class="o">}]}</span>
+</pre>
+<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'travis'</span>
+
+<span class="no">Travis</span><span class="o">::</span><span class="no">Broadcast</span><span class="p">.</span><span class="nf">current</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">broadcast</span><span class="o">|</span>
+  <span class="nb">puts</span> <span class="n">broadcast</span><span class="p">.</span><span class="nf">message</span>
+<span class="k">end</span>
+</pre>
+
+<h3 id="attributes">Attributes</h3>
+
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>broadcast id</td>
+</tr>
+<tr>
+<td>message</td>
+<td>broadcast message</td>
+</tr>
+</tbody></table>
+
+<h3 id="list-broadcasts">List Broadcasts</h3>
+
+<p><code class="prettyprint">GET /broadcasts</code></p>
+
+<p>This request always needs to be authenticated.</p>
 
 <h2 id="builds">Builds</h2>
+<pre class="highlight http"><span class="nf">GET</span> <span class="nn">/repos/sinatra/sinatra/builds</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">MyClient/1.0.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/vnd.travis-ci.2+json</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.travis-ci.org</span>
+</pre>
+<pre class="highlight http"><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
 
-<p>TODO</p>
+<span class="p">{</span><span class="w">
+  </span><span class="s2">"builds"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"commit_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">6534711</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"config"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">},</span><span class="w">
+      </span><span class="s2">"duration"</span><span class="p">:</span><span class="w"> </span><span class="mi">2648</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"finished_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2014-04-08T19:52:56Z"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">22555277</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"job_ids"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">22555278</span><span class="p">,</span><span class="w"> </span><span class="mi">22555279</span><span class="p">,</span><span class="w"> </span><span class="mi">22555280</span><span class="p">,</span><span class="w"> </span><span class="mi">22555281</span><span class="p">],</span><span class="w">
+      </span><span class="s2">"number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"784"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"pull_request"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"pull_request_number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1912"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"pull_request_title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Example PR"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"repository_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">82</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"started_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2014-04-08T19:37:44Z"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"failed"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"jobs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"commits"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></pre>
+<pre class="highlight shell"><span class="gp">$ </span>travis <span class="nb">history</span>
+...
+<span class="gp">$ </span>travis show 15 <span class="c"># show build #15</span>
+...
+<span class="gp">$ </span>travis restart 15
+...
+<span class="gp">$ </span>travis cancel 15
+...
+</pre>
+<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'travis'</span>
+<span class="no">Travis</span><span class="p">.</span><span class="nf">access_token</span> <span class="o">=</span> <span class="s1">'YOUR ACCESS TOKEN'</span>
+
+<span class="n">repository</span> <span class="o">=</span> <span class="no">Travis</span><span class="o">::</span><span class="no">Repository</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="s1">'my/repo'</span><span class="p">)</span>
+<span class="n">repository</span><span class="p">.</span><span class="nf">each_build</span> <span class="k">do</span> <span class="o">|</span><span class="n">build</span><span class="o">|</span>
+  <span class="c1"># restart all the builds</span>
+  <span class="n">build</span><span class="p">.</span><span class="nf">restart</span>
+<span class="k">end</span>
+</pre>
+
+<h3 id="attributes">Attributes</h3>
+
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>build id</td>
+</tr>
+<tr>
+<td>repository_id</td>
+<td>repository id</td>
+</tr>
+<tr>
+<td>commit_id</td>
+<td>commit id</td>
+</tr>
+<tr>
+<td>number</td>
+<td>build number</td>
+</tr>
+<tr>
+<td>pull_request</td>
+<td>true or false</td>
+</tr>
+<tr>
+<td>pull_request_title</td>
+<td>PR title if pull_request is true</td>
+</tr>
+<tr>
+<td>pull_request_number</td>
+<td>PR number if  pull_request is true</td>
+</tr>
+<tr>
+<td>config</td>
+<td>build config (secure values and ssh key removed)</td>
+</tr>
+<tr>
+<td>state</td>
+<td>build state</td>
+</tr>
+<tr>
+<td>started_at</td>
+<td>time the build was started</td>
+</tr>
+<tr>
+<td>finished_at</td>
+<td>time the build finished</td>
+</tr>
+<tr>
+<td>duration</td>
+<td>build duration</td>
+</tr>
+<tr>
+<td>job_ids</td>
+<td>list of job ids in the build matrix</td>
+</tr>
+</tbody></table>
+
+<p>Note that <code class="prettyprint">duration</code> might not correspond to <code class="prettyprint">finished_at - started_at</code> if the build was restarted at a later point.</p>
+
+<h3 id="list-builds">List Builds</h3>
+
+<p><code class="prettyprint">GET /builds</code></p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>ids</td>
+<td></td>
+<td>list of build ids to fetch</td>
+</tr>
+<tr>
+<td>repository_id</td>
+<td></td>
+<td>repository id the build belongs to</td>
+</tr>
+<tr>
+<td>slug</td>
+<td></td>
+<td>repository slug the build belongs to</td>
+</tr>
+<tr>
+<td>number</td>
+<td></td>
+<td>filter by build number, requires slug or repository_id</td>
+</tr>
+<tr>
+<td>after_number</td>
+<td></td>
+<td>list build after a given build number (use for pagination), requires slug or repository_id</td>
+</tr>
+<tr>
+<td>event_type</td>
+<td></td>
+<td>limit build to given event type (<code class="prettyprint">push</code> or <code class="prettyprint">pull_request</code>)</td>
+</tr>
+</tbody></table>
+
+<p>You have to supply either <code class="prettyprint">ids</code>, <code class="prettyprint">repository_id</code> or <code class="prettyprint">slug</code>.</p>
+
+<p><code class="prettyprint">GET /repos/{repository.id}/builds</code></p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>number</td>
+<td></td>
+<td>filter by build number</td>
+</tr>
+<tr>
+<td>after_number</td>
+<td></td>
+<td>list build after a given build number (use for pagination)</td>
+</tr>
+<tr>
+<td>event_type</td>
+<td></td>
+<td>limit build to given event type (<code class="prettyprint">push</code> or <code class="prettyprint">pull_request</code>)</td>
+</tr>
+</tbody></table>
+
+<p><code class="prettyprint">GET /repos/{repository.owner_name}/{repository.name}/builds</code></p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>number</td>
+<td></td>
+<td>filter by build number</td>
+</tr>
+<tr>
+<td>after_number</td>
+<td></td>
+<td>list build after a given build number (use for pagination)</td>
+</tr>
+<tr>
+<td>event_type</td>
+<td></td>
+<td>limit build to given event type (<code class="prettyprint">push</code> or <code class="prettyprint">pull_request</code>)</td>
+</tr>
+</tbody></table>
+
+<h3 id="show-build">Show Build</h3>
+
+<p><code class="prettyprint">GET /builds/{build.id}</code></p>
+
+<p><code class="prettyprint">GET /repos/{repository.id}/builds/{build.id}</code></p>
+
+<p><code class="prettyprint">GET /repos/{repository.owner_name}/{repository.name}/builds/{build.id}</code></p>
+
+<h3 id="cancel-build">Cancel Build</h3>
+
+<p><code class="prettyprint">POST /builds/{build.id}/cancel</code></p>
+
+<p>This request always needs to be authenticated.</p>
+
+<h3 id="restart-build">Restart Build</h3>
+
+<p><code class="prettyprint">POST /builds/{build.id}/restart</code></p>
+
+<p>This request always needs to be authenticated.</p>
 
 <h2 id="caches">Caches</h2>
+<pre class="highlight http"><span class="err">REQUEST
+</span></pre>
+<pre class="highlight http"><span class="err">RESPONSE
+</span></pre>
+<pre class="highlight shell"><span class="gp">$ </span>travis cache -r travis-pro/billing
+On branch master:
+cache--rvm-2.0.0--gemfile-Gemfile  last modified: 2014-03-06 11:19:49  size: 98.87 MiB
 
-<p>TODO</p>
+On branch mm-ruby-2.1:
+cache--rvm-2.0.0--gemfile-Gemfile  last modified: 2013-12-28 09:42:21  size: 98.87 MiB
+cache--rvm-2.1.0--gemfile-Gemfile  last modified: 2013-12-28 09:42:21  size: 88.02 MiB
+
+Overall size of above caches: 371.08 MiB
+
+<span class="gp">$ </span>travis cache -r travis-pro/billing --delete --branch mm-ruby-2.1
+</pre>
+<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'travis'</span>
+
+<span class="n">repository</span> <span class="o">=</span> <span class="no">Travis</span><span class="o">::</span><span class="no">Repository</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="s1">'travis-pro/billing'</span><span class="p">)</span>
+<span class="n">repository</span><span class="p">.</span><span class="nf">caches</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">cache</span><span class="o">|</span>
+  <span class="c1"># delete all caches!</span>
+  <span class="n">cache</span><span class="p">.</span><span class="nf">delete</span> <span class="k">if</span> <span class="n">cache</span><span class="p">.</span><span class="nf">branch</span> <span class="o">==</span> <span class="s1">'mm-ruby-2.1'</span>
+<span class="k">end</span>
+
+<span class="c1"># or in a single request</span>
+<span class="n">repository</span><span class="p">.</span><span class="nf">delete_caches</span><span class="p">(</span><span class="ss">branch: </span><span class="s1">'mm-ruby-2.1'</span><span class="p">)</span>
+</pre>
+
+<h3 id="attributes">Attributes</h3>
+
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>repository_id</td>
+<td>id of the repository the cache belongs to</td>
+</tr>
+<tr>
+<td>size</td>
+<td>compressed cache size in bytes</td>
+</tr>
+<tr>
+<td>slug</td>
+<td>cache slug (generated from env)</td>
+</tr>
+<tr>
+<td>branch</td>
+<td>branch the cache is for</td>
+</tr>
+<tr>
+<td>last_modified</td>
+<td>last time the cache was updated</td>
+</tr>
+</tbody></table>
+
+<h3 id="list-caches">List caches</h3>
+
+<p><code class="prettyprint">GET /repos/{repository.id}/caches</code></p>
+
+<p><code class="prettyprint">GET /repos/{repository.owner_name}/{repository.name}/caches</code></p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>branch</td>
+<td></td>
+<td>limit listed caches to those on given branch</td>
+</tr>
+<tr>
+<td>match</td>
+<td></td>
+<td>limit listed caches to those with <code class="prettyprint">slug</code> containing the given value</td>
+</tr>
+</tbody></table>
+
+<p>This request always needs to be authenticated.</p>
+
+<h3 id="delete-caches">Delete caches</h3>
+
+<p><code class="prettyprint">DELETE /repos/{repository.id}/caches</code></p>
+
+<p><code class="prettyprint">DELETE /repos/{repository.owner_name}/{repository.name}/caches</code></p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>branch</td>
+<td></td>
+<td>only delete caches on given branch</td>
+</tr>
+<tr>
+<td>match</td>
+<td></td>
+<td>only delete caches with <code class="prettyprint">slug</code> containing the given value</td>
+</tr>
+</tbody></table>
+
+<p>This request always needs to be authenticated.</p>
 
 <h2 id="commits">Commits</h2>
 
