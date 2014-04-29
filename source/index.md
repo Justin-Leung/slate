@@ -608,13 +608,13 @@ This will list the latest 25 branches.
 
 `GET /repos/{repository.id}/branches`
 
-`GET /repos/{repository.owner_name}/{repository.name}/branches`
+`GET /repos/{+repository.slug}/branches`
 
 ### Show Branch
 
 `GET /repos/{repository.id}/branches/{branch}`
 
-`GET /repos/{repository.owner_name}/{repository.name}/branches/{branch}`
+`GET /repos/{+repository.slug}/branches/{branch}`
 
 ## Broadcasts
 
@@ -767,7 +767,7 @@ number        |         | filter by build number
 after_number  |         | list build after a given build number (use for pagination)
 event_type    |         | limit build to given event type (`push` or `pull_request`)
 
-`GET /repos/{repository.owner_name}/{repository.name}/builds`
+`GET /repos/{+repository.slug}/builds`
 
 Parameter     | Default | Description
 ------------- | ------- | -----------
@@ -781,7 +781,7 @@ event_type    |         | limit build to given event type (`push` or `pull_reque
 
 `GET /repos/{repository.id}/builds/{build.id}`
 
-`GET /repos/{repository.owner_name}/{repository.name}/builds/{build.id}`
+`GET /repos/{+repository.slug}/builds/{build.id}`
 
 ### Cancel Build
 
@@ -863,7 +863,7 @@ last_modified       | last time the cache was updated
 
 `GET /repos/{repository.id}/caches`
 
-`GET /repos/{repository.owner_name}/{repository.name}/caches`
+`GET /repos/{+repository.slug}/caches`
 
 Parameter     | Default | Description
 ------------- | ------- | -----------
@@ -876,7 +876,7 @@ This request always needs to be authenticated.
 
 `DELETE /repos/{repository.id}/caches`
 
-`DELETE /repos/{repository.owner_name}/{repository.name}/caches`
+`DELETE /repos/{+repository.slug}/caches`
 
 Parameter     | Default | Description
 ------------- | ------- | -----------
@@ -1009,33 +1009,576 @@ This request always needs to be authenticated.
 
 ## Jobs
 
-TODO
+``` http
+POST /jobs/42/restart HTTP/1.1
+User-Agent: MyClient/1.0.0
+Accept: application/vnd.travis-ci.2+json
+Authorization: token YOUR TRAVIS ACCESS TOKEN
+Host: api.travis-ci.org
+```
+
+``` shell
+$ travis restart 1.2 -r my/repo
+```
+
+``` ruby
+require 'travis'
+Travis.access_token = 'YOUR TRAVIS ACCESS TOKEN'
+
+Travis.repos('my/repo').last_build.jobs.each do |job|
+  job.restart if job.failed?
+end
+```
+
+### Attributes
+
+Attribute           | Description
+------------------- | -----------
+id                  | job id
+build_id            | build id
+repository_id       | repository id
+commit_id           | commit id
+log_id              | log id
+number              | job number
+config              | job config (secure values and ssh key removed)
+state               | job state
+started_at          | time the job was started
+finished_at         | time the job finished
+duration            | job duration
+queue               | job queue
+allow_failure       | whether or not job state influences build state
+annotation_ids      | list of annotation ids
+
+### Fetch Job
+
+`GET /jobs/{job.id}`
+
+### Fetch multiple jobs
+
+<aside class='notice'>Job entities are included in build payloads.</aside>
+
+Parameter     | Default | Description
+------------- | ------- | -----------
+ids           |         | list of job ids
+state         |         | job state to filter by
+queue         |         | job queue to filter by
+
+You need to provide exactly one of the above parameters.
+If you provide `state` or `queue`, a maximum of 250 jobs will be returned.
+
+### Cancel Job
+
+`POST /jobs/{job.id}/cancel`
+
+This request always needs to be authenticated.
+
+### Restart Job
+
+`POST /jobs/{job.id}/restart`
+
+This request always needs to be authenticated.
 
 ## Logs
 
-TODO
+``` http
+GET /jobs/42/logs HTTP/1.1
+User-Agent: MyClient/1.0.0
+Accept: text/plain
+Host: api.travis-ci.org
+```
+
+``` http
+HTTP/1.1 200 OK
+Content-Type text/plain
+
+Using worker: ...
+```
+
+``` shell
+$ travis logs
+... logs ...
+```
+
+``` ruby
+require 'travis'
+
+rails = Travis::Repository.find('rails/rails')
+job   = rails.last_build.jobs.first
+
+# this will live stream if the job is currently running
+job.log.body do |part|
+  print part
+end
+```
+
+### Attributes
+
+Attribute           | Description
+------------------- | -----------
+id                  | log id
+job_id              | job id
+body                | log body
+
+### Chunked Attributes
+
+You can retrieve the chunked attributes instead of the normal attributes b adding the attribute `chunked=true` to the mime-type specified in the `Accept` header.
+
+Attribute           | Description
+------------------- | -----------
+id                  | log id
+job_id              | job id
+parts               | log parts
+
+The `parts` will be an array of JSON objects with the following attributes:
+
+Attribute           | Description
+------------------- | -----------
+number              | part number
+content             | part content
+
+### Fetching a Log
+
+`GET /logs/{log.id}`
+
+### Fetching Logs as plain text
+
+<aside class='warning'>The response will not be JSON but plain text.</aside>
+
+`GET /jobs/{job.id}/logs`
+
+This might be necessary if the log has been archived, in which case it will result in a redirect.
+
+### Streaming Logs
+
+To stream the logs, you will have to subscribe to the channel for the job the log belongs to on Pusher (channel is `job-{job.id}`) and listen for `job:log` events. The payload will have the same format as parts have in the chunked attributes API payloads.
 
 ## Permissions
 
-TODO
+``` http
+GET /users/permissions HTTP/1.1
+User-Agent: MyClient/1.0.0
+Accept: application/vnd.travis-ci.2+json
+Authorization: token YOUR TRAVIS ACCESS TOKEN
+Host: api.travis-ci.org
+```
+
+``` http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "permissions": [1, 2, 3],
+  "admin": [1, 2],
+  "pull": [],
+  "push": [3]
+}
+```
+
+``` shell
+$ travis repos
+
+```
+
+``` ruby
+require 'travis'
+Travis.access_token = 'YOUR TRAVIS ACCESS TOKEN'
+
+Travis.user.push_access.each do |repo|
+  puts "has push access to #{repo.slug}"
+end
+```
+
+The permissions endpoint will return arrays of repository ids:
+
+Key                 | ids for
+------------------- | -----------
+permissions         | repositories the user has access to
+admin               | repositories the user has admin access to
+pull                | repositories the user has pull access to
+push                | repositories the user has push access to
+
+The pull access list is only relevant for private projects.
+
+### Fetch Permissions
+
+`GET /users/permissions`
+
+This request always needs to be authenticated.
 
 ## Repository Keys
 
-TODO
+``` http
+GET /repos/sinatra/sinatra/key HTTP/1.1
+User-Agent: MyClient/1.0.0
+Accept: application/vnd.travis-ci.2+json
+Authorization: token YOUR TRAVIS ACCESS TOKEN
+Host: api.travis-ci.org
+```
+
+``` http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "public_key": "-----BEGIN RSA PUBLIC KEY-----\\nMIGJAoGBAOcx131amMqIzm5+FbZz+DhIgSDbFzjKKpzaN5UWVCrLSc57z64xxTV6\\nkaOTZmjCWz6WpaPkFZY+czfL7lmuZ/Y6UNm0vupvdZ6t27SytFFGd1/RJlAe89tu\\nGcIrC1vtEvQu2frMLvHqFylnGd5Gy64qkQT4KRhMsfZctX4z5VzTAgMBAAE=\\n-----END RSA PUBLIC KEY-----\\n"
+}
+```
+
+``` shell
+$ travis pubkey -r travis-ci/travis-api
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQCOmOkC6MYRH1w2ib3AIC00GNwmgr8ch3mNHZ16x6cvSMjc6cURZt9Hav6gz03P5+9e5Vw1ztm3hvPR+IJsyOV/CSsYf1Cgboj6ZJ7tr3xOJXcqcMVfiGiG7Km6/psRdn0jrjTpU/qcru8Wx3zbQEf5NuXQyMVHmnl8/5w0WPV/Uw==
+
+$ travis pubkey --pem -r travis-ci/travis-api
+-----BEGIN RSA PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCOmOkC6MYRH1w2ib3AIC00GNwm
+gr8ch3mNHZ16x6cvSMjc6cURZt9Hav6gz03P5+9e5Vw1ztm3hvPR+IJsyOV/CSsY
+f1Cgboj6ZJ7tr3xOJXcqcMVfiGiG7Km6/psRdn0jrjTpU/qcru8Wx3zbQEf5NuXQ
+yMVHmnl8/5w0WPV/UwIDAQAB
+-----END RSA PUBLIC KEY-----
+```
+
+``` ruby
+require 'travis'
+repo = Travis::Repository.find('travis-ci/travis-api')
+
+puts "SSH format:", repo.key.to_ssh
+puts "PEM format:", repo.key.to_s
+puts repository.encrypt("example")
+```
+
+Attribute           | Description
+------------------- | -----------
+key                 | public key
+
+This key can be used to encrypt (but not decrypt) secure env vars.
+
+### Fetch a Public Key
+
+`GET /repos/{repository.id}/key`
+
+`GET /repos/{+repository.slug}/key`
+
+### Generate a Public Key
+
+`POST /repos/{repository.id}/key`
+
+`POST /repos/{+repository.slug}/key`
+
+This will invalidate the current key, thus also rendering all encrypted variables invalid.
+
+This request always needs to be authenticated.
 
 ## Repositories
 
-TODO
+``` http
+GET /repos/sinatra/sinatra HTTP/1.1
+User-Agent: MyClient/1.0.0
+Accept: application/vnd.travis-ci.2+json
+Authorization: token YOUR TRAVIS ACCESS TOKEN
+Host: api.travis-ci.org
+```
+
+``` http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "repo": {
+    "id": 82,
+    "slug": "sinatra/sinatra",
+    "description": "Classy web-development dressed in a DSL",
+    "last_build_id": 23436881,
+    "last_build_number": "792",
+    "last_build_state": "passed",
+    "last_build_duration": 2542,
+    "last_build_started_at": "2014-04-21T15:27:14Z",
+    "last_build_finished_at": "2014-04-21T15:40:04Z",
+    "github_language": "Ruby"
+  }
+}
+```
+
+``` shell
+$ travis show -r travis-ci/travis-api
+...
+```
+
+``` ruby
+require 'travis'
+repos = Travis::Repository.find_all(owner_name: 'sinatra')
+repos.each do |repo|
+  puts repo.slug
+end
+```
+
+### Attributes
+
+Attribute               | Description
+----------------------- | -----------
+id                      | repository id
+slug                    | repository slug
+description             | description on githu
+last_build_id           | build id of the last build
+last_build_number       | build number of the last build
+last_build_state        | build state of the last build
+last_build_duration     | build duration of the last build
+last_build_started_at   | build started at of the last build
+last_build_finished_at  | build finished at of the last build
+github_language         | language on github
+
+### Fetch Repository
+
+`GET /repos/{repository.id}`
+
+`GET /repos/{+repository.slug}`
+
+### Find Repositories
+
+Parameter     | Default | Description
+------------- | ------- | -----------
+ids           |         | list of repository ids to fetch, cannot be combined with other parameters
+member        |         | filter by user that has access to it (github login)
+owner_name    |         | filter by owner name (first segment of slug)
+slug          |         | filter by slug
+search        |         | filter by search term
+active        | `false` | if `true`, will only return repositories that are enabled
+
+If no parameters are given, a list or repositories with recent activity is returned.
 
 ## Requests
 
-TODO
+``` http
+GET /requests/6301283 HTTP/1.1
+User-Agent: MyClient/1.0.0
+Accept: application/vnd.travis-ci.2+json
+Authorization: token YOUR TRAVIS ACCESS TOKEN
+Host: api.travis-ci.org
+```
+
+``` http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "request": {
+    "id": 6301283,
+    "repository_id": 1121945,
+    "commit_id": 5904016,
+    "created_at": "2014-03-08T15:54:07Z",
+    "owner_id": 4279,
+    "owner_type": "Organization",
+    "event_type": "push",
+    "result": "accepted",
+    "pull_request": false,
+    "branch": "feat-container-injector"
+  },
+  "commit": {
+    "id": 5904016,
+    "sha": "09e2ce14f1debea64a1122851fc3f8f1c1a18ebc",
+    "branch": "feat-container-injector",
+    "message": "don't inject the service_container",
+    "committed_at": "2014-03-08T15:53:42Z",
+    "author_name": "Sebastiaan Stok",
+    "author_email": "s.stok@rollerscapes.net",
+    "committer_name": "Sebastiaan Stok",
+    "committer_email": "s.stok@rollerscapes.net",
+    "compare_url": "https://github.com/..."
+  }
+}
+```
+
+``` shell
+$ travis requests -r my/repo
+...
+```
+
+``` ruby
+require 'travis'
+
+Travis::Repository.find('sinatra/sinatra').requests.each do |request|
+  puts "#{request.commit.sha}: #{request.result}"
+end
+```
+
+Requests can be used to see if and why a GitHub even has or has not triggered a new build.
+
+### Attributes
+
+Attribute            | Description
+-------------------- | -----------
+id                   | request id
+commit_id            | commit id
+repository_id        | repository id
+created_at           | created at
+owner_id             | owner id
+owner_type           | owner type (`"User"` or `"Organization"`)
+event_type           | event type (`"push"` or `"pull_request"`)
+base_commit          | base commit for pull requests
+head_commit          | head commit for pull requests
+result               | `"accepted"`, `"rejected"` or `null`
+message              | human readable message explaining why event has been rejected
+pull_request         | `true` or `false`
+pull_request_number  | pull request number
+pull_request_title   | pull request title
+branch               | branch commit is on
+tag                  | tag if commit has been tagged
+
+### Show Request
+
+`GET /requests/{request.id}`
+
+### List Requests
+
+`GET /requests`
+
+Parameter     | Default | Description
+------------- | ------- | -----------
+repository_id |         | repository id the requests belong to
+slug          |         | repository slug the requests belong to
+limit         | 25      | maximum number of requests to return (cannot be larger than 100)
+older_than    |         | list requests before `older_than` (with `older_than` being a request id)
+
+You have to either provide `repository_id` or `slug`.
 
 ## Settings
 
-TODO
+``` http
+GET /repos/82/settings HTTP/1.1
+User-Agent: MyClient/1.0.0
+Accept: application/vnd.travis-ci.2+json
+Authorization: token YOUR TRAVIS ACCESS TOKEN
+Host: api.travis-ci.org
+```
+
+``` http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "settings": {
+    "builds_only_with_travis_yml": true,
+    "build_pushes": true,
+    "build_pull_requests": true
+  }
+}
+```
+
+``` shell
+$ travis settings
+Settings for travis-ci/travis-api:
+[-] builds_only_with_travis_yml    Only run builds with a .travis.yml
+[+] build_pushes                   Build pushes
+[+] build_pull_requests            Build pull requests
+
+$ travis settings build_pull_requests --enable
+```
+
+``` ruby
+require 'travis'
+Travis.access_token = 'YOUR TRAVIS ACCESS TOKEN'
+repo = Travis::Repository.find('my/repo')
+repo.settings.build_pull_requests = false
+repo.settings.save
+```
+
+### Attributes
+
+
+Attribute                   | Description
+--------------------------- | -----------
+builds_only_with_travis_yml | "builds only with .travis.yml" setting (`true` or `false`)
+build_pushes                | "build pushes" setting (`true` or `false`)
+build_pull_requests         | "build pull requests" setting (`true` or `false`)
+
+### Retrieve Settings
+
+`GET /repos/{repository.id}/settings`
+
+This request always needs to be authenticated.
+
+### Update Settings
+
+`PATCH /repos/{repository.id}/settings`
+
+Parameter                   | Default | Description
+--------------------------- | ------- | -----------
+settings                    | `{}`    | Hash map of settings that should be updated and their new values (see Attributes)
+
+This request always needs to be authenticated.
 
 ## Users
+
+``` http
+GET /users/ HTTP/1.1
+User-Agent: MyClient/1.0.0
+Accept: application/vnd.travis-ci.2+json
+Authorization: token YOUR TRAVIS ACCESS TOKEN
+Host: api.travis-ci.org
+```
+
+``` http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "user": {
+    "id": 267,
+    "name": "Konstantin Haase",
+    "login": "rkh",
+    "email": "github@rkh.im",
+    "gravatar_id": "5c2b452f6eea4a6d84c105ebd971d2a4",
+    "is_syncing": false,
+    "synced_at": "2014-02-27T18:53:43Z",
+    "correct_scopes": false,
+    "created_at": "2011-03-30T16:25:21Z"
+  }
+}
+```
+
+``` shell
+$ travis whoami
+You are rkh (Konstantin Haase)
+
+$ travis sync
+synchronizing: ... done
+```
+
+``` ruby
+require 'travis'
+Travis.access_token = 'YOUR TRAVIS ACCESS TOKEN'
+puts Travis.user.name
+Travis.user.sync
+```
+
+### Attributes
+
+Attribute            | Description
+-------------------- | -----------
+id                   | user id
+login                | user login on github
+name                 | user name  on github
+email                | primary email address on github
+gravatar_id          | avatarid
+is_syncing           | whether or not user account is currently being synced
+synced_at            | last synced at
+correct_scopes       | whether or not github token has the correct scopes
+channels             | pusher channels for this user
+
+### Show User
+
+`GET /users/`
+
+`GET /users/{user.id}`
+
+This request always needs to be authenticated.
+
+### Sync Users
+
+`POST /users/sync`
+
+Triggers a new sync with GitHub. Might return status `409` if the user is currently syncing.
+
+This request always needs to be authenticated.
 
 # API Clients
 
