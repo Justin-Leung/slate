@@ -5,6 +5,10 @@ language_tabs:
 - http
 - shell
 - ruby
+
+toc_footers:
+- <a href='https://travis-ci.org'>Travis CI for Open Source</a>
+- <a href='https://travis-ci.com'>Travis CI for Private Projects</a>
 ---
 
 # Overview
@@ -1657,7 +1661,6 @@ You can disable the same origin policy by treating the response as JavaScript.
 Supply a `callback` parameter to use this.
 
 This has the potential of code injection, use with caution.
-
 
 ## Third Party
 
