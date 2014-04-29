@@ -677,13 +677,13 @@ adequaterecord: <span class="c">#15158 passed   wrap the literal value before ha
 
 <p><code class="prettyprint">GET /repos/{repository.id}/branches</code></p>
 
-<p><code class="prettyprint">GET /repos/{repository.owner_name}/{repository.name}/branches</code></p>
+<p><code class="prettyprint">GET /repos/{+repository.slug}/branches</code></p>
 
 <h3 id="show-branch">Show Branch</h3>
 
 <p><code class="prettyprint">GET /repos/{repository.id}/branches/{branch}</code></p>
 
-<p><code class="prettyprint">GET /repos/{repository.owner_name}/{repository.name}/branches/{branch}</code></p>
+<p><code class="prettyprint">GET /repos/{+repository.slug}/branches/{branch}</code></p>
 
 <h2 id="broadcasts">Broadcasts</h2>
 <pre class="highlight http"><span class="nf">GET</span> <span class="nn">/broadcasts</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -923,7 +923,7 @@ adequaterecord: <span class="c">#15158 passed   wrap the literal value before ha
 </tr>
 </tbody></table>
 
-<p><code class="prettyprint">GET /repos/{repository.owner_name}/{repository.name}/builds</code></p>
+<p><code class="prettyprint">GET /repos/{+repository.slug}/builds</code></p>
 
 <table><thead>
 <tr>
@@ -955,7 +955,7 @@ adequaterecord: <span class="c">#15158 passed   wrap the literal value before ha
 
 <p><code class="prettyprint">GET /repos/{repository.id}/builds/{build.id}</code></p>
 
-<p><code class="prettyprint">GET /repos/{repository.owner_name}/{repository.name}/builds/{build.id}</code></p>
+<p><code class="prettyprint">GET /repos/{+repository.slug}/builds/{build.id}</code></p>
 
 <h3 id="cancel-build">Cancel Build</h3>
 
@@ -1049,7 +1049,7 @@ Overall size of above caches: 371.08 MiB
 
 <p><code class="prettyprint">GET /repos/{repository.id}/caches</code></p>
 
-<p><code class="prettyprint">GET /repos/{repository.owner_name}/{repository.name}/caches</code></p>
+<p><code class="prettyprint">GET /repos/{+repository.slug}/caches</code></p>
 
 <table><thead>
 <tr>
@@ -1076,7 +1076,7 @@ Overall size of above caches: 371.08 MiB
 
 <p><code class="prettyprint">DELETE /repos/{repository.id}/caches</code></p>
 
-<p><code class="prettyprint">DELETE /repos/{repository.owner_name}/{repository.name}/caches</code></p>
+<p><code class="prettyprint">DELETE /repos/{+repository.slug}/caches</code></p>
 
 <table><thead>
 <tr>
@@ -1266,34 +1266,839 @@ Overall size of above caches: 371.08 MiB
 <p>This request always needs to be authenticated.</p>
 
 <h2 id="jobs">Jobs</h2>
+<pre class="highlight http"><span class="nf">POST</span> <span class="nn">/jobs/42/restart</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">MyClient/1.0.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/vnd.travis-ci.2+json</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">token YOUR TRAVIS ACCESS TOKEN</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.travis-ci.org</span>
+</pre>
+<pre class="highlight shell"><span class="gp">$ </span>travis restart 1.2 -r my/repo
+</pre>
+<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'travis'</span>
+<span class="no">Travis</span><span class="p">.</span><span class="nf">access_token</span> <span class="o">=</span> <span class="s1">'YOUR TRAVIS ACCESS TOKEN'</span>
 
-<p>TODO</p>
+<span class="no">Travis</span><span class="p">.</span><span class="nf">repos</span><span class="p">(</span><span class="s1">'my/repo'</span><span class="p">).</span><span class="nf">last_build</span><span class="p">.</span><span class="nf">jobs</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">job</span><span class="o">|</span>
+  <span class="n">job</span><span class="p">.</span><span class="nf">restart</span> <span class="k">if</span> <span class="n">job</span><span class="p">.</span><span class="nf">failed?</span>
+<span class="k">end</span>
+</pre>
+
+<h3 id="attributes">Attributes</h3>
+
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>job id</td>
+</tr>
+<tr>
+<td>build_id</td>
+<td>build id</td>
+</tr>
+<tr>
+<td>repository_id</td>
+<td>repository id</td>
+</tr>
+<tr>
+<td>commit_id</td>
+<td>commit id</td>
+</tr>
+<tr>
+<td>log_id</td>
+<td>log id</td>
+</tr>
+<tr>
+<td>number</td>
+<td>job number</td>
+</tr>
+<tr>
+<td>config</td>
+<td>job config (secure values and ssh key removed)</td>
+</tr>
+<tr>
+<td>state</td>
+<td>job state</td>
+</tr>
+<tr>
+<td>started_at</td>
+<td>time the job was started</td>
+</tr>
+<tr>
+<td>finished_at</td>
+<td>time the job finished</td>
+</tr>
+<tr>
+<td>duration</td>
+<td>job duration</td>
+</tr>
+<tr>
+<td>queue</td>
+<td>job queue</td>
+</tr>
+<tr>
+<td>allow_failure</td>
+<td>whether or not job state influences build state</td>
+</tr>
+<tr>
+<td>annotation_ids</td>
+<td>list of annotation ids</td>
+</tr>
+</tbody></table>
+
+<h3 id="fetch-job">Fetch Job</h3>
+
+<p><code class="prettyprint">GET /jobs/{job.id}</code></p>
+
+<h3 id="fetch-multiple-jobs">Fetch multiple jobs</h3>
+
+<p><aside class='notice'>Job entities are included in build payloads.</aside></p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>ids</td>
+<td></td>
+<td>list of job ids</td>
+</tr>
+<tr>
+<td>state</td>
+<td></td>
+<td>job state to filter by</td>
+</tr>
+<tr>
+<td>queue</td>
+<td></td>
+<td>job queue to filter by</td>
+</tr>
+</tbody></table>
+
+<p>You need to provide exactly one of the above parameters.
+If you provide <code class="prettyprint">state</code> or <code class="prettyprint">queue</code>, a maximum of 250 jobs will be returned.</p>
+
+<h3 id="cancel-job">Cancel Job</h3>
+
+<p><code class="prettyprint">POST /jobs/{job.id}/cancel</code></p>
+
+<p>This request always needs to be authenticated.</p>
+
+<h3 id="restart-job">Restart Job</h3>
+
+<p><code class="prettyprint">POST /jobs/{job.id}/restart</code></p>
+
+<p>This request always needs to be authenticated.</p>
 
 <h2 id="logs">Logs</h2>
+<pre class="highlight http"><span class="nf">GET</span> <span class="nn">/jobs/42/logs</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">MyClient/1.0.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">text/plain</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.travis-ci.org</span>
+</pre>
+<pre class="highlight http"><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="s">Content-Type text/plain</span>
 
-<p>TODO</p>
+Using worker: ...
+</pre>
+<pre class="highlight shell"><span class="gp">$ </span>travis logs
+... logs ...
+</pre>
+<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'travis'</span>
+
+<span class="n">rails</span> <span class="o">=</span> <span class="no">Travis</span><span class="o">::</span><span class="no">Repository</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="s1">'rails/rails'</span><span class="p">)</span>
+<span class="n">job</span>   <span class="o">=</span> <span class="n">rails</span><span class="p">.</span><span class="nf">last_build</span><span class="p">.</span><span class="nf">jobs</span><span class="p">.</span><span class="nf">first</span>
+
+<span class="c1"># this will live stream if the job is currently running</span>
+<span class="n">job</span><span class="p">.</span><span class="nf">log</span><span class="p">.</span><span class="nf">body</span> <span class="k">do</span> <span class="o">|</span><span class="n">part</span><span class="o">|</span>
+  <span class="nb">print</span> <span class="n">part</span>
+<span class="k">end</span>
+</pre>
+
+<h3 id="attributes">Attributes</h3>
+
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>log id</td>
+</tr>
+<tr>
+<td>job_id</td>
+<td>job id</td>
+</tr>
+<tr>
+<td>body</td>
+<td>log body</td>
+</tr>
+</tbody></table>
+
+<h3 id="chunked-attributes">Chunked Attributes</h3>
+
+<p>You can retrieve the chunked attributes instead of the normal attributes b adding the attribute <code class="prettyprint">chunked=true</code> to the mime-type specified in the <code class="prettyprint">Accept</code> header.</p>
+
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>log id</td>
+</tr>
+<tr>
+<td>job_id</td>
+<td>job id</td>
+</tr>
+<tr>
+<td>parts</td>
+<td>log parts</td>
+</tr>
+</tbody></table>
+
+<p>The <code class="prettyprint">parts</code> will be an array of JSON objects with the following attributes:</p>
+
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>number</td>
+<td>part number</td>
+</tr>
+<tr>
+<td>content</td>
+<td>part content</td>
+</tr>
+</tbody></table>
+
+<h3 id="fetching-a-log">Fetching a Log</h3>
+
+<p><code class="prettyprint">GET /logs/{log.id}</code></p>
+
+<h3 id="fetching-logs-as-plain-text">Fetching Logs as plain text</h3>
+
+<p><aside class='warning'>The response will not be JSON but plain text.</aside></p>
+
+<p><code class="prettyprint">GET /jobs/{job.id}/logs</code></p>
+
+<p>This might be necessary if the log has been archived, in which case it will result in a redirect.</p>
+
+<h3 id="streaming-logs">Streaming Logs</h3>
+
+<p>To stream the logs, you will have to subscribe to the channel for the job the log belongs to on Pusher (channel is <code class="prettyprint">job-{job.id}</code>) and listen for <code class="prettyprint">job:log</code> events. The payload will have the same format as parts have in the chunked attributes API payloads.</p>
 
 <h2 id="permissions">Permissions</h2>
+<pre class="highlight http"><span class="nf">GET</span> <span class="nn">/users/permissions</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">MyClient/1.0.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/vnd.travis-ci.2+json</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">token YOUR TRAVIS ACCESS TOKEN</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.travis-ci.org</span>
+</pre>
+<pre class="highlight http"><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
 
-<p>TODO</p>
+<span class="p">{</span><span class="w">
+  </span><span class="s2">"permissions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">],</span><span class="w">
+  </span><span class="s2">"admin"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">],</span><span class="w">
+  </span><span class="s2">"pull"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w">
+  </span><span class="s2">"push"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></pre>
+<pre class="highlight shell"><span class="gp">$ </span>travis repos
+
+</pre>
+<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'travis'</span>
+<span class="no">Travis</span><span class="p">.</span><span class="nf">access_token</span> <span class="o">=</span> <span class="s1">'YOUR TRAVIS ACCESS TOKEN'</span>
+
+<span class="no">Travis</span><span class="p">.</span><span class="nf">user</span><span class="p">.</span><span class="nf">push_access</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">repo</span><span class="o">|</span>
+  <span class="nb">puts</span> <span class="s2">"has push access to </span><span class="si">#{</span><span class="n">repo</span><span class="p">.</span><span class="nf">slug</span><span class="si">}</span><span class="s2">"</span>
+<span class="k">end</span>
+</pre>
+
+<p>The permissions endpoint will return arrays of repository ids:</p>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>ids for</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>permissions</td>
+<td>repositories the user has access to</td>
+</tr>
+<tr>
+<td>admin</td>
+<td>repositories the user has admin access to</td>
+</tr>
+<tr>
+<td>pull</td>
+<td>repositories the user has pull access to</td>
+</tr>
+<tr>
+<td>push</td>
+<td>repositories the user has push access to</td>
+</tr>
+</tbody></table>
+
+<p>The pull access list is only relevant for private projects.</p>
+
+<h3 id="fetch-permissions">Fetch Permissions</h3>
+
+<p><code class="prettyprint">GET /users/permissions</code></p>
+
+<p>This request always needs to be authenticated.</p>
 
 <h2 id="repository-keys">Repository Keys</h2>
+<pre class="highlight http"><span class="nf">GET</span> <span class="nn">/repos/sinatra/sinatra/key</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">MyClient/1.0.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/vnd.travis-ci.2+json</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">token YOUR TRAVIS ACCESS TOKEN</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.travis-ci.org</span>
+</pre>
+<pre class="highlight http"><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
 
-<p>TODO</p>
+<span class="p">{</span><span class="w">
+  </span><span class="s2">"public_key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-----BEGIN RSA PUBLIC KEY-----\\nMIGJAoGBAOcx131amMqIzm5+FbZz+DhIgSDbFzjKKpzaN5UWVCrLSc57z64xxTV6\\nkaOTZmjCWz6WpaPkFZY+czfL7lmuZ/Y6UNm0vupvdZ6t27SytFFGd1/RJlAe89tu\\nGcIrC1vtEvQu2frMLvHqFylnGd5Gy64qkQT4KRhMsfZctX4z5VzTAgMBAAE=\\n-----END RSA PUBLIC KEY-----\\n"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></pre>
+<pre class="highlight shell"><span class="gp">$ </span>travis pubkey -r travis-ci/travis-api
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQCOmOkC6MYRH1w2ib3AIC00GNwmgr8ch3mNHZ16x6cvSMjc6cURZt9Hav6gz03P5+9e5Vw1ztm3hvPR+IJsyOV/CSsYf1Cgboj6ZJ7tr3xOJXcqcMVfiGiG7Km6/psRdn0jrjTpU/qcru8Wx3zbQEf5NuXQyMVHmnl8/5w0WPV/Uw<span class="o">==</span>
+
+<span class="gp">$ </span>travis pubkey --pem -r travis-ci/travis-api
+-----BEGIN RSA PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCOmOkC6MYRH1w2ib3AIC00GNwm
+gr8ch3mNHZ16x6cvSMjc6cURZt9Hav6gz03P5+9e5Vw1ztm3hvPR+IJsyOV/CSsY
+f1Cgboj6ZJ7tr3xOJXcqcMVfiGiG7Km6/psRdn0jrjTpU/qcru8Wx3zbQEf5NuXQ
+yMVHmnl8/5w0WPV/UwIDAQAB
+-----END RSA PUBLIC KEY-----
+</pre>
+<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'travis'</span>
+<span class="n">repo</span> <span class="o">=</span> <span class="no">Travis</span><span class="o">::</span><span class="no">Repository</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="s1">'travis-ci/travis-api'</span><span class="p">)</span>
+
+<span class="nb">puts</span> <span class="s2">"SSH format:"</span><span class="p">,</span> <span class="n">repo</span><span class="p">.</span><span class="nf">key</span><span class="p">.</span><span class="nf">to_ssh</span>
+<span class="nb">puts</span> <span class="s2">"PEM format:"</span><span class="p">,</span> <span class="n">repo</span><span class="p">.</span><span class="nf">key</span><span class="p">.</span><span class="nf">to_s</span>
+<span class="nb">puts</span> <span class="n">repository</span><span class="p">.</span><span class="nf">encrypt</span><span class="p">(</span><span class="s2">"example"</span><span class="p">)</span>
+</pre>
+
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>key</td>
+<td>public key</td>
+</tr>
+</tbody></table>
+
+<p>This key can be used to encrypt (but not decrypt) secure env vars.</p>
+
+<h3 id="fetch-a-public-key">Fetch a Public Key</h3>
+
+<p><code class="prettyprint">GET /repos/{repository.id}/key</code></p>
+
+<p><code class="prettyprint">GET /repos/{+repository.slug}/key</code></p>
+
+<h3 id="generate-a-public-key">Generate a Public Key</h3>
+
+<p><code class="prettyprint">POST /repos/{repository.id}/key</code></p>
+
+<p><code class="prettyprint">POST /repos/{+repository.slug}/key</code></p>
+
+<p>This will invalidate the current key, thus also rendering all encrypted variables invalid.</p>
+
+<p>This request always needs to be authenticated.</p>
 
 <h2 id="repositories">Repositories</h2>
+<pre class="highlight http"><span class="nf">GET</span> <span class="nn">/repos/sinatra/sinatra</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">MyClient/1.0.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/vnd.travis-ci.2+json</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">token YOUR TRAVIS ACCESS TOKEN</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.travis-ci.org</span>
+</pre>
+<pre class="highlight http"><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
 
-<p>TODO</p>
+<span class="p">{</span><span class="w">
+  </span><span class="s2">"repo"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">82</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"slug"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sinatra/sinatra"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Classy web-development dressed in a DSL"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"last_build_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">23436881</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"last_build_number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"792"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"last_build_state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"passed"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"last_build_duration"</span><span class="p">:</span><span class="w"> </span><span class="mi">2542</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"last_build_started_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2014-04-21T15:27:14Z"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"last_build_finished_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2014-04-21T15:40:04Z"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"github_language"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Ruby"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></pre>
+<pre class="highlight shell"><span class="gp">$ </span>travis show -r travis-ci/travis-api
+...
+</pre>
+<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'travis'</span>
+<span class="n">repos</span> <span class="o">=</span> <span class="no">Travis</span><span class="o">::</span><span class="no">Repository</span><span class="p">.</span><span class="nf">find_all</span><span class="p">(</span><span class="ss">owner_name: </span><span class="s1">'sinatra'</span><span class="p">)</span>
+<span class="n">repos</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">repo</span><span class="o">|</span>
+  <span class="nb">puts</span> <span class="n">repo</span><span class="p">.</span><span class="nf">slug</span>
+<span class="k">end</span>
+</pre>
+
+<h3 id="attributes">Attributes</h3>
+
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>repository id</td>
+</tr>
+<tr>
+<td>slug</td>
+<td>repository slug</td>
+</tr>
+<tr>
+<td>description</td>
+<td>description on githu</td>
+</tr>
+<tr>
+<td>last_build_id</td>
+<td>build id of the last build</td>
+</tr>
+<tr>
+<td>last_build_number</td>
+<td>build number of the last build</td>
+</tr>
+<tr>
+<td>last_build_state</td>
+<td>build state of the last build</td>
+</tr>
+<tr>
+<td>last_build_duration</td>
+<td>build duration of the last build</td>
+</tr>
+<tr>
+<td>last_build_started_at</td>
+<td>build started at of the last build</td>
+</tr>
+<tr>
+<td>last_build_finished_at</td>
+<td>build finished at of the last build</td>
+</tr>
+<tr>
+<td>github_language</td>
+<td>language on github</td>
+</tr>
+</tbody></table>
+
+<h3 id="fetch-repository">Fetch Repository</h3>
+
+<p><code class="prettyprint">GET /repos/{repository.id}</code></p>
+
+<p><code class="prettyprint">GET /repos/{+repository.slug}</code></p>
+
+<h3 id="find-repositories">Find Repositories</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>ids</td>
+<td></td>
+<td>list of repository ids to fetch, cannot be combined with other parameters</td>
+</tr>
+<tr>
+<td>member</td>
+<td></td>
+<td>filter by user that has access to it (github login)</td>
+</tr>
+<tr>
+<td>owner_name</td>
+<td></td>
+<td>filter by owner name (first segment of slug)</td>
+</tr>
+<tr>
+<td>slug</td>
+<td></td>
+<td>filter by slug</td>
+</tr>
+<tr>
+<td>search</td>
+<td></td>
+<td>filter by search term</td>
+</tr>
+<tr>
+<td>active</td>
+<td><code class="prettyprint">false</code></td>
+<td>if <code class="prettyprint">true</code>, will only return repositories that are enabled</td>
+</tr>
+</tbody></table>
+
+<p>If no parameters are given, a list or repositories with recent activity is returned.</p>
 
 <h2 id="requests">Requests</h2>
+<pre class="highlight http"><span class="nf">GET</span> <span class="nn">/requests/6301283</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">MyClient/1.0.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/vnd.travis-ci.2+json</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">token YOUR TRAVIS ACCESS TOKEN</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.travis-ci.org</span>
+</pre>
+<pre class="highlight http"><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
 
-<p>TODO</p>
+<span class="p">{</span><span class="w">
+  </span><span class="s2">"request"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">6301283</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"repository_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1121945</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"commit_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">5904016</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2014-03-08T15:54:07Z"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"owner_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">4279</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"owner_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Organization"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"event_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"push"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"result"</span><span class="p">:</span><span class="w"> </span><span class="s2">"accepted"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"pull_request"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"branch"</span><span class="p">:</span><span class="w"> </span><span class="s2">"feat-container-injector"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"commit"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">5904016</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"sha"</span><span class="p">:</span><span class="w"> </span><span class="s2">"09e2ce14f1debea64a1122851fc3f8f1c1a18ebc"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"branch"</span><span class="p">:</span><span class="w"> </span><span class="s2">"feat-container-injector"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"don't inject the service_container"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"committed_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2014-03-08T15:53:42Z"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"author_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sebastiaan Stok"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"author_email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"s.stok@rollerscapes.net"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"committer_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sebastiaan Stok"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"committer_email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"s.stok@rollerscapes.net"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"compare_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://github.com/..."</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></pre>
+<pre class="highlight shell"><span class="gp">$ </span>travis requests -r my/repo
+...
+</pre>
+<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'travis'</span>
+
+<span class="no">Travis</span><span class="o">::</span><span class="no">Repository</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="s1">'sinatra/sinatra'</span><span class="p">).</span><span class="nf">requests</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">request</span><span class="o">|</span>
+  <span class="nb">puts</span> <span class="s2">"</span><span class="si">#{</span><span class="n">request</span><span class="p">.</span><span class="nf">commit</span><span class="p">.</span><span class="nf">sha</span><span class="si">}</span><span class="s2">: </span><span class="si">#{</span><span class="n">request</span><span class="p">.</span><span class="nf">result</span><span class="si">}</span><span class="s2">"</span>
+<span class="k">end</span>
+</pre>
+
+<p>Requests can be used to see if and why a GitHub even has or has not triggered a new build.</p>
+
+<h3 id="attributes">Attributes</h3>
+
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>request id</td>
+</tr>
+<tr>
+<td>commit_id</td>
+<td>commit id</td>
+</tr>
+<tr>
+<td>repository_id</td>
+<td>repository id</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>created at</td>
+</tr>
+<tr>
+<td>owner_id</td>
+<td>owner id</td>
+</tr>
+<tr>
+<td>owner_type</td>
+<td>owner type (<code class="prettyprint">&quot;User&quot;</code> or <code class="prettyprint">&quot;Organization&quot;</code>)</td>
+</tr>
+<tr>
+<td>event_type</td>
+<td>event type (<code class="prettyprint">&quot;push&quot;</code> or <code class="prettyprint">&quot;pull_request&quot;</code>)</td>
+</tr>
+<tr>
+<td>base_commit</td>
+<td>base commit for pull requests</td>
+</tr>
+<tr>
+<td>head_commit</td>
+<td>head commit for pull requests</td>
+</tr>
+<tr>
+<td>result</td>
+<td><code class="prettyprint">&quot;accepted&quot;</code>, <code class="prettyprint">&quot;rejected&quot;</code> or <code class="prettyprint">null</code></td>
+</tr>
+<tr>
+<td>message</td>
+<td>human readable message explaining why event has been rejected</td>
+</tr>
+<tr>
+<td>pull_request</td>
+<td><code class="prettyprint">true</code> or <code class="prettyprint">false</code></td>
+</tr>
+<tr>
+<td>pull_request_number</td>
+<td>pull request number</td>
+</tr>
+<tr>
+<td>pull_request_title</td>
+<td>pull request title</td>
+</tr>
+<tr>
+<td>branch</td>
+<td>branch commit is on</td>
+</tr>
+<tr>
+<td>tag</td>
+<td>tag if commit has been tagged</td>
+</tr>
+</tbody></table>
+
+<h3 id="show-request">Show Request</h3>
+
+<p><code class="prettyprint">GET /requests/{request.id}</code></p>
+
+<h3 id="list-requests">List Requests</h3>
+
+<p><code class="prettyprint">GET /requests</code></p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>repository_id</td>
+<td></td>
+<td>repository id the requests belong to</td>
+</tr>
+<tr>
+<td>slug</td>
+<td></td>
+<td>repository slug the requests belong to</td>
+</tr>
+<tr>
+<td>limit</td>
+<td>25</td>
+<td>maximum number of requests to return (cannot be larger than 100)</td>
+</tr>
+<tr>
+<td>older_than</td>
+<td></td>
+<td>list requests before <code class="prettyprint">older_than</code> (with <code class="prettyprint">older_than</code> being a request id)</td>
+</tr>
+</tbody></table>
+
+<p>You have to either provide <code class="prettyprint">repository_id</code> or <code class="prettyprint">slug</code>.</p>
 
 <h2 id="settings">Settings</h2>
+<pre class="highlight http"><span class="nf">GET</span> <span class="nn">/repos/82/settings</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">MyClient/1.0.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/vnd.travis-ci.2+json</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">token YOUR TRAVIS ACCESS TOKEN</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.travis-ci.org</span>
+</pre>
+<pre class="highlight http"><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
 
-<p>TODO</p>
+<span class="p">{</span><span class="w">
+  </span><span class="s2">"settings"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"builds_only_with_travis_yml"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"build_pushes"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"build_pull_requests"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></pre>
+<pre class="highlight shell"><span class="gp">$ </span>travis settings
+Settings <span class="k">for </span>travis-ci/travis-api:
+<span class="o">[</span>-] builds_only_with_travis_yml    Only run builds with a .travis.yml
+<span class="o">[</span>+] build_pushes                   Build pushes
+<span class="o">[</span>+] build_pull_requests            Build pull requests
+
+<span class="gp">$ </span>travis settings build_pull_requests --enable
+</pre>
+<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'travis'</span>
+<span class="no">Travis</span><span class="p">.</span><span class="nf">access_token</span> <span class="o">=</span> <span class="s1">'YOUR TRAVIS ACCESS TOKEN'</span>
+<span class="n">repo</span> <span class="o">=</span> <span class="no">Travis</span><span class="o">::</span><span class="no">Repository</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="s1">'my/repo'</span><span class="p">)</span>
+<span class="n">repo</span><span class="p">.</span><span class="nf">settings</span><span class="p">.</span><span class="nf">build_pull_requests</span> <span class="o">=</span> <span class="kp">false</span>
+<span class="n">repo</span><span class="p">.</span><span class="nf">settings</span><span class="p">.</span><span class="nf">save</span>
+</pre>
+
+<h3 id="attributes">Attributes</h3>
+
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>builds_only_with_travis_yml</td>
+<td>&ldquo;builds only with .travis.yml&rdquo; setting (<code class="prettyprint">true</code> or <code class="prettyprint">false</code>)</td>
+</tr>
+<tr>
+<td>build_pushes</td>
+<td>&ldquo;build pushes&rdquo; setting (<code class="prettyprint">true</code> or <code class="prettyprint">false</code>)</td>
+</tr>
+<tr>
+<td>build_pull_requests</td>
+<td>&ldquo;build pull requests&rdquo; setting (<code class="prettyprint">true</code> or <code class="prettyprint">false</code>)</td>
+</tr>
+</tbody></table>
+
+<h3 id="retrieve-settings">Retrieve Settings</h3>
+
+<p><code class="prettyprint">GET /repos/{repository.id}/settings</code></p>
+
+<p>This request always needs to be authenticated.</p>
+
+<h3 id="update-settings">Update Settings</h3>
+
+<p><code class="prettyprint">PATCH /repos/{repository.id}/settings</code></p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>settings</td>
+<td><code class="prettyprint">{}</code></td>
+<td>Hash map of settings that should be updated and their new values (see Attributes)</td>
+</tr>
+</tbody></table>
+
+<p>This request always needs to be authenticated.</p>
 
 <h2 id="users">Users</h2>
+<pre class="highlight http"><span class="nf">GET</span> <span class="nn">/users/</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">MyClient/1.0.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/vnd.travis-ci.2+json</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">token YOUR TRAVIS ACCESS TOKEN</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">api.travis-ci.org</span>
+</pre>
+<pre class="highlight http"><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+
+<span class="p">{</span><span class="w">
+  </span><span class="s2">"user"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">267</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Konstantin Haase"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"login"</span><span class="p">:</span><span class="w"> </span><span class="s2">"rkh"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"github@rkh.im"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"gravatar_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5c2b452f6eea4a6d84c105ebd971d2a4"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"is_syncing"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"synced_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2014-02-27T18:53:43Z"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"correct_scopes"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2011-03-30T16:25:21Z"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></pre>
+<pre class="highlight shell"><span class="gp">$ </span>travis whoami
+You are rkh <span class="o">(</span>Konstantin Haase<span class="o">)</span>
+
+<span class="gp">$ </span>travis sync
+synchronizing: ... <span class="k">done</span>
+</pre>
+<pre class="highlight ruby"><span class="nb">require</span> <span class="s1">'travis'</span>
+<span class="no">Travis</span><span class="p">.</span><span class="nf">access_token</span> <span class="o">=</span> <span class="s1">'YOUR TRAVIS ACCESS TOKEN'</span>
+<span class="nb">puts</span> <span class="no">Travis</span><span class="p">.</span><span class="nf">user</span><span class="p">.</span><span class="nf">name</span>
+<span class="no">Travis</span><span class="p">.</span><span class="nf">user</span><span class="p">.</span><span class="nf">sync</span>
+</pre>
+
+<h3 id="attributes">Attributes</h3>
+
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>user id</td>
+</tr>
+<tr>
+<td>login</td>
+<td>user login on github</td>
+</tr>
+<tr>
+<td>name</td>
+<td>user name  on github</td>
+</tr>
+<tr>
+<td>email</td>
+<td>primary email address on github</td>
+</tr>
+<tr>
+<td>gravatar_id</td>
+<td>avatarid</td>
+</tr>
+<tr>
+<td>is_syncing</td>
+<td>whether or not user account is currently being synced</td>
+</tr>
+<tr>
+<td>synced_at</td>
+<td>last synced at</td>
+</tr>
+<tr>
+<td>correct_scopes</td>
+<td>whether or not github token has the correct scopes</td>
+</tr>
+<tr>
+<td>channels</td>
+<td>pusher channels for this user</td>
+</tr>
+</tbody></table>
+
+<h3 id="show-user">Show User</h3>
+
+<p><code class="prettyprint">GET /users/</code></p>
+
+<p><code class="prettyprint">GET /users/{user.id}</code></p>
+
+<p>This request always needs to be authenticated.</p>
+
+<h3 id="sync-users">Sync Users</h3>
+
+<p><code class="prettyprint">POST /users/sync</code></p>
+
+<p>Triggers a new sync with GitHub. Might return status <code class="prettyprint">409</code> if the user is currently syncing.</p>
+
+<p>This request always needs to be authenticated.</p>
 
 <h1 id="api-clients">API Clients</h1>
 
